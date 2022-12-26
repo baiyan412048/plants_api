@@ -8,8 +8,7 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
 import webIndexRouter from './routes/web/index.js';
-// import webIndexRouter from './routes/web';
-// const cmsIndexRouter = require('./routes/cms/index');
+import cmsIndexRouter from './routes/cms/index.js'
 
 const app = express();
 
@@ -39,7 +38,7 @@ app.use(cookieParser());
 // 前端畫面 API
 app.use('/api/web', webIndexRouter);
 // 後端管理 API
-// app.use('/api/cms', cmsIndexRouter);
+app.use('/api/cms', cmsIndexRouter);
 
 // app.use('/users', usersRouter);
 // app.use('/statement', statementRouter);
