@@ -7,8 +7,7 @@ import { join } from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
-import webIndexRouter from './routes/web/index.js';
-import cmsIndexRouter from './routes/cms/index.js'
+import router from './routes/index.js';
 
 const app = express();
 
@@ -36,11 +35,8 @@ app.use(cookieParser());
 
 
 // 前端畫面 API
-app.use('/api/web', webIndexRouter);
-// 後端管理 API
-app.use('/api/cms', cmsIndexRouter);
-
-// app.use('/users', usersRouter);
+app.use('/api', router);
+// app.use('/users', router);
 // app.use('/statement', statementRouter);
 
 // catch 404 and forward to error handler

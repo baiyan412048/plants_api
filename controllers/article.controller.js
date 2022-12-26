@@ -2,10 +2,12 @@ import { ArticleCatalog, ArticleOutline, ArticleDetail } from '../models/article
 
 import { validationResult } from 'express-validator/check/index.js'
 
+// 新增分類
 export const ArticleCatalogPost = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     // res.render('author_form', { title: 'Create Author', author: req.body, errors: errors.array() });
+    // **應重新導向
     return;
   }
   else {
@@ -21,41 +23,26 @@ export const ArticleCatalogPost = (req, res, next) => {
   }
 };
 
+// 新增列表 & 內文資訊
 export const ArticleDetailPost = async (req, res, next) => {
+  // res.send(req.body)
+
+  const catalog = await ArticleCatalog.findOne({
+    catalog: req.body.catalog
+  })
+
+  if (!catalog) res.send("找不到 catalog")
+
   const Outline = await ArticleOutline.create({
     title: req.body.title,
     image: req.body.image,
-    catalog: ArticleCatalog.findOne({
-      catalog: req.body.catalog
-    }),
-  });
+    catalog: catalog._id,
+  })
 
   const Detail = await ArticleDetail.create({
+    outline: Outline._id,
     contents: req.body.contents
-  });
+  })
 
-  async.parallel({
-    author(callback) {
-      Author
-        .findById(req.params.id)
-        .exec(callback)
-    },
-    authors_books(callback) {
-      Book
-        .find({ 'author': req.params.id },'title summary')
-        .exec(callback)
-    },
-  },
-  (err, results) => {
-    // Error in API usage.
-    if (err) return next(err);
-    // No results.
-    if (results.author == null) {
-      var err = new Error('Author not found');
-      err.status = 404;
-      return next(err);
-    }
-    // Successful, so render.
-    res.render('author_detail', { title: 'Author Detail', author: results.author, author_books: results.authors_books } );
-  });
+  res.send(Detail)
 };

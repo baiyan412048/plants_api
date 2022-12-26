@@ -1,6 +1,7 @@
 import { Router } from 'express';
 const router = Router();
 
+// WEB
 router.get('/', function(req, res, next) {
   res.send('ABOUT PAGE');
 });

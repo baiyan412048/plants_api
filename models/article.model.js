@@ -5,7 +5,9 @@ import mongoose, { Schema } from 'mongoose';
 const ArticleCatalogSchema = new Schema(
   {
     catalog: {
-      type: String, required: true, max: 10
+      type: String,
+      required: true,
+      max: 10
     },
   },
   {
@@ -18,7 +20,9 @@ const ArticleCatalog = mongoose.model('Article_Catalog', ArticleCatalogSchema);
 const ArticleOutlineSchema = new Schema(
   {
     title: {
-      type: String, required: true, max: 100
+      type: String,
+      required: true,
+      max: 100
     },
     image: {
       type: String,
@@ -50,11 +54,10 @@ const ArticleDetailSchema = new Schema(
           type: String,
           required: true
         },
-        images: [
-          {
-            type: String,
-          }
-        ],
+        images: {
+          type: Array,
+          default: []
+        },
         content: {
           type: String,
           required: true
@@ -67,6 +70,6 @@ const ArticleDetailSchema = new Schema(
   }
 );
 
-const ArticleDetail = mongoose.model('Article_outline', ArticleOutlineSchema)
+const ArticleDetail = mongoose.model('Article_detail', ArticleDetailSchema)
 
 export { ArticleCatalog, ArticleOutline, ArticleDetail }
