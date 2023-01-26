@@ -6,7 +6,7 @@ const ArticleCatalogSchema = new Schema(
   {
     catalog: {
       type: String,
-      required: true,
+      required: [true, '分類名 為必填'],
       max: 10
     },
   },
@@ -15,23 +15,26 @@ const ArticleCatalogSchema = new Schema(
   }
 );
 
-const ArticleCatalog = mongoose.model('Article_Catalog', ArticleCatalogSchema);
+/**
+ * article catalog model
+ */
+export const ArticleCatalog = mongoose.model('Article_catalog', ArticleCatalogSchema);
+
 
 const ArticleOutlineSchema = new Schema(
   {
     title: {
       type: String,
-      required: true,
+      required: [true, '標題 為必填'],
       max: 100
     },
     image: {
-      type: String,
-      required: true
+      type: String
     },
     catalog: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'article_catalog',
-      required: true
+      ref: 'Article_catalog',
+      required: [true, '分類 為必選']
     },
   },
   {
@@ -39,20 +42,25 @@ const ArticleOutlineSchema = new Schema(
   }
 );
 
-const ArticleOutline = mongoose.model('Article_outline', ArticleOutlineSchema)
+/**
+ * article outline model
+ */
+export const ArticleOutline = mongoose.model('Article_outline', ArticleOutlineSchema)
+
 
 const ArticleDetailSchema = new Schema(
   {
     outline: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'article_outline',
+      ref: 'Article_outline',
       required: true
     },
     contents: [
       {
         style: {
           type: String,
-          required: true
+          enum: ['-single', '-double'],
+          default: '-single'
         },
         images: {
           type: Array,
@@ -60,7 +68,6 @@ const ArticleDetailSchema = new Schema(
         },
         content: {
           type: String,
-          required: true
         }
       }
     ]
@@ -70,6 +77,7 @@ const ArticleDetailSchema = new Schema(
   }
 );
 
-const ArticleDetail = mongoose.model('Article_detail', ArticleDetailSchema)
-
-export { ArticleCatalog, ArticleOutline, ArticleDetail }
+/**
+ * article detail model
+ */
+export const ArticleDetail = mongoose.model('Article_detail', ArticleDetailSchema)

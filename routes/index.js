@@ -9,6 +9,7 @@ import { product } from './product.router.js';
 import { checkout } from './checkout.router.js';
 import { member } from './member.router.js';
 import { contact } from './contact.router.js';
+import { image } from './image.router.js';
 
 // 首頁
 router.get('/', function(req, res, next) {
@@ -31,5 +32,7 @@ router.use('/checkout', checkout);
 router.use('/member', member);
 // 聯絡我們
 router.use('/contact', contact);
+// 圖片相關 - 取得、上傳、刪除
+router.use('/image', image);
 
 export default router;

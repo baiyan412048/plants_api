@@ -1,42 +1,67 @@
+
+// 失敗事件回應
+// import errorHandle from '../service/errorHandle.js'
+// 成功事件回應
+import successHandle from '../service/successHandle.js'
+
+// article models
 import { ArticleCatalog, ArticleOutline, ArticleDetail } from '../models/article.model.js'
 
 import { validationResult } from 'express-validator/check/index.js'
 
-// 新增分類
-export const ArticleCatalogPost = (req, res, next) => {
+/**
+ * 取得 outline
+ */
+export const ArticleOutlineGet = async (req, res, next) => {
+  const Outline = await ArticleOutline.find().populate('catalog')
+
+  if (!Outline.length) {
+    res.send('找不到 Outline')
+  }
+
+  res.send(Outline)
+
+  // successHandle(res, '成功取得內文', );
+};
+
+/**
+ * 新增分類
+*/
+export const ArticleCatalogPost = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     // res.render('author_form', { title: 'Create Author', author: req.body, errors: errors.array() });
-    // **應重新導向
     return;
   }
   else {
-    const catalog = new ArticleCatalog({
+    const Catalog = new ArticleCatalog({
       catalog: req.body.name,
     });
 
-    catalog.save(function (err) {
+    Catalog.save((err) => {
       if (err) return next(err);
-      res.send(req.body)
-      // res.redirect('/api/web');
+      successHandle(res, '成功新增分類', Catalog);
     });
   }
 };
 
-// 新增列表 & 內文資訊
+/**
+ * 新增列表 & 內文資訊
+*/
 export const ArticleDetailPost = async (req, res, next) => {
-  // res.send(req.body)
-
-  const catalog = await ArticleCatalog.findOne({
+  const Catalog = await ArticleCatalog.findOne({
     catalog: req.body.catalog
   })
 
-  if (!catalog) res.send("找不到 catalog")
+  if (!Catalog) {
+    // ** 找不到就新增
+    res.send('找不到 catalog')
+  }
 
   const Outline = await ArticleOutline.create({
     title: req.body.title,
     image: req.body.image,
-    catalog: catalog._id,
+    catalog: Catalog._id,
   })
 
   const Detail = await ArticleDetail.create({
@@ -44,5 +69,5 @@ export const ArticleDetailPost = async (req, res, next) => {
     contents: req.body.contents
   })
 
-  res.send(Detail)
+  successHandle(res, '成功新增內文', Detail);
 };
