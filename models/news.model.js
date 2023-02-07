@@ -1,9 +1,11 @@
 import mongoose, { Schema } from 'mongoose';
 
+// import moment from 'moment';
+
 /**
- * article catalog schema
+ * news catalog schema
  */
-const ArticleCatalogSchema = new Schema(
+const NewsCatalogSchema = new Schema(
   {
     catalog: {
       type: String,
@@ -17,14 +19,14 @@ const ArticleCatalogSchema = new Schema(
 );
 
 /**
- * article catalog model
+ * news catalog model
  */
-export const ArticleCatalog = mongoose.model('Article_catalog', ArticleCatalogSchema);
+export const NewsCatalog = mongoose.model('News_catalog', NewsCatalogSchema);
 
 /**
- * article outline schema
+ * news outline schema
  */
-const ArticleOutlineSchema = new Schema(
+const NewsOutlineSchema = new Schema(
   {
     title: {
       type: String,
@@ -36,7 +38,7 @@ const ArticleOutlineSchema = new Schema(
     },
     catalog: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Article_catalog',
+      ref: 'News_catalog',
       required: [true, '分類 為必選']
     },
   },
@@ -46,18 +48,18 @@ const ArticleOutlineSchema = new Schema(
 );
 
 /**
- * article outline model
+ * news outline model
  */
-export const ArticleOutline = mongoose.model('Article_outline', ArticleOutlineSchema)
+export const NewsOutline = mongoose.model('News_outline', NewsOutlineSchema)
 
 /**
- * article detail schema
+ * news detail schema
  */
-const ArticleDetailSchema = new Schema(
+const NewsDetailSchema = new Schema(
   {
     outline: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Article_outline',
+      ref: 'News_outline',
       required: true
     },
     contents: [
@@ -83,6 +85,6 @@ const ArticleDetailSchema = new Schema(
 );
 
 /**
- * article detail model
+ * news detail model
  */
-export const ArticleDetail = mongoose.model('Article_detail', ArticleDetailSchema)
+export const NewsDetail = mongoose.model('News_detail', NewsDetailSchema)

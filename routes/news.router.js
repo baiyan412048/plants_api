@@ -1,28 +1,23 @@
 import { Router } from 'express';
 const router = Router();
 
-router.get('/', function(req, res, next) {
-  res.send('NEWS PAGE');
+import { NewsOutlineGet, NewsCatalogPost, NewsDetailPost } from '../controllers/news.controller.js'
+
+// WEB
+router.get('/', NewsOutlineGet);
+
+router.get('/:catalog', (req, res, next) => {
+  res.send(`ARTICLE ${req.params.catalog} PAGE`);
 });
 
-router.get('/business-hours', function(req, res, next) {
-  res.send(`NEWS BUSINESS HOURS PAGE`);
+// 新增分類
+router.post('/catalog', NewsCatalogPost);
+
+router.get('/:catalog/:title', (req, res, next) => {
+  res.send(`ARTICLE ${req.params.catalog} ${req.params.title} PAGE`);
 });
 
-router.get('/business-hours/:yy', function(req, res, next) {
-  res.send(`NEWS BUSINESS HOURS ${req.params.yy} PAGE`);
-});
-
-router.get('/business-hours/:yy/:mm', function(req, res, next) {
-  res.send(`NEWS BUSINESS HOURS ${req.params.yy} ${req.params.mm} PAGE`);
-});
-
-router.get('/:catalog', function(req, res, next) {
-  res.send(`NEWS ${req.params.catalog} PAGE`);
-});
-
-router.get('/:catalog/:title', function(req, res, next) {
-  res.send(`NEWS ${req.params.catalog} ${req.params.title} PAGE`);
-});
+// 新增內容 ( 列表資訊、內文 )
+router.post('/detail', NewsDetailPost);
 
 export { router as news }

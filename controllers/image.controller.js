@@ -69,7 +69,7 @@ export const DeleteImage = async (req, res, next) => {
 
   await Image.findByIdAndDelete(image._id);
 
-  await client.deleteImage(hash)
+  await client.deleteImage(hash);
 
   successHandle(res, '成功刪除圖片', image);
 }

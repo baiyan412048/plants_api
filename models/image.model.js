@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose';
 // import moment from 'moment';
 
 /**
- * image model
+ * image schema
  */
 const ImageSchema = new Schema(
   {
@@ -21,4 +21,7 @@ const ImageSchema = new Schema(
   }
 );
 
+/**
+ * image model
+ */
 export const Image = mongoose.model('Album', ImageSchema);
