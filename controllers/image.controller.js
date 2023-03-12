@@ -41,7 +41,7 @@ export const PostImage = async (req, res, next) => {
 
     await Image.create(option);
 
-    images.push(response);
+    images.push(response.data);
   }
 
   successHandle(res, '成功新增圖片', images);
