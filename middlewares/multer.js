@@ -9,11 +9,11 @@ const limits = {
 */
 const checkUpload = multer({
   limits,
-  fileFilter(req, file, cb) {
+  fileFilter(req, file, next) {
     if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|WEBP|webp)$/)) {
-      cb(new Error('檔案格式錯誤，僅限上傳 jpg、jpeg 與 png 格式。'))
+      next(new Error('檔案格式錯誤，僅限上傳 jpg、jpeg 與 png 格式。'))
     }
-    cb(null, true)
+    next(null, true)
   }
 }).any()
 
