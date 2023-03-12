@@ -14,8 +14,7 @@ const { ImgurClient } = imgur
 */
 export const PostImage = async (req, res, next) => {
   if (!req.files?.length) {
-    console.log('尚無上傳圖片！');
-    res.status(404).send('尚無上傳圖片！');
+    res.status(404).send('無圖片上傳！');
   }
 
   const client = new ImgurClient({
@@ -27,8 +26,6 @@ export const PostImage = async (req, res, next) => {
   const images = []
 
   for await (const file of req.files) {
-    // 待確認複數圖片的 name 如何新增
-    console.log(file, 'file')
     const response = await client.upload({
       name: file.originalname,
       image: file.buffer.toString('base64'),
@@ -44,7 +41,7 @@ export const PostImage = async (req, res, next) => {
 
     await Image.create(option);
 
-    images.push(file);
+    images.push(response);
   }
 
   successHandle(res, '成功新增圖片', images);
@@ -54,7 +51,7 @@ export const DeleteImage = async (req, res, next) => {
   const { hash } = req.params
 
   if (!hash) {
-    console.log('找不到 hash');
+    res.status(404).send('請提供 deleteHash');
   }
 
   const client = new ImgurClient({
@@ -68,8 +65,7 @@ export const DeleteImage = async (req, res, next) => {
   });
 
   if (!image) {
-    console.log('找不到圖片')
-    res.status(404).send('找不到圖片');
+    res.status(404).send('無此圖片');
     return
   }
 
