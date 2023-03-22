@@ -1,23 +1,21 @@
 import { Router } from 'express';
 const router = Router();
 
-import { ArticleOutlineGet, ArticleCatalogPost, ArticleDetailPost } from '../controllers/article.controller.js'
+import { ArticleGetCatalogs, ArticlePostCatalog, ArticleGetOutlines, ArticleGetDetail, ArticlePostDetail } from '../controllers/article.controller.js'
 
-// WEB
-router.get('/', ArticleOutlineGet);
+// 取得全部 Catalog
+router.get('/catalogs', ArticleGetCatalogs);
 
-router.get('/:catalog', (req, res, next) => {
-  res.send(`ARTICLE ${req.params.catalog} PAGE`);
-});
+// 新增 Catalog
+router.post('/catalog', ArticlePostCatalog);
 
-// 新增分類
-router.post('/catalog', ArticleCatalogPost);
+// 取得全部 Outline
+router.get('/', ArticleGetOutlines);
 
-router.get('/:catalog/:title', (req, res, next) => {
-  res.send(`ARTICLE ${req.params.catalog} ${req.params.title} PAGE`);
-});
+// 取得特定文章
+router.get('/:catalog/:title', ArticleGetDetail);
 
-// 新增內容 ( 列表資訊、內文 )
-router.post('/detail', ArticleDetailPost);
+// 新增列表 & 內文資訊
+router.post('/detail', ArticlePostDetail);
 
 export { router as article }
