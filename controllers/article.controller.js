@@ -7,8 +7,6 @@ import successHandle from '../service/successHandle.js'
 // article models
 import { ArticleCatalog, ArticleOutline, ArticleDetail } from '../models/article.model.js'
 
-import { validationResult } from 'express-validator/check/index.js'
-
 /**
  * 取得 outline
  */
@@ -16,58 +14,66 @@ export const ArticleOutlineGet = async (req, res, next) => {
   const Outline = await ArticleOutline.find().populate('catalog')
 
   if (!Outline.length) {
-    res.send('找不到 Outline')
+    res.status(400).send('無文章簡介被建立');
   }
 
-  res.send(Outline)
-
-  // successHandle(res, '成功取得內文', );
+  successHandle(res, '成功取得文章簡介', Outline);
 };
 
 /**
  * 新增分類
-*/
+ */
 export const ArticleCatalogPost = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    // res.render('author_form', { title: 'Create Author', author: req.body, errors: errors.array() });
+  if (!req.body.catalog) {
+    res.status(400).send('請確認文章分類名稱');
     return;
   }
-  else {
-    const Catalog = new ArticleCatalog({
-      catalog: req.body.name,
-    });
 
-    Catalog.save((err) => {
-      if (err) return next(err);
-      successHandle(res, '成功新增分類', Catalog);
-    });
+  const isExist = await ArticleCatalog.findOne({
+    catalog: req.body.catalog
+  });
+
+  if (isExist.length) {
+    successHandle(res, '此文章分類已存在', Catalog);
+    return
   }
+
+  const Catalog = await ArticleCatalog.create({
+    catalog: req.body.catalog
+  });
+
+  Catalog.save((err) => {
+    if (err) {
+      res.status(500).send('發生錯誤，請稍後再試');
+      return
+    }
+    successHandle(res, '成功新增文章分類', Catalog);
+  });
 };
 
 /**
  * 新增列表 & 內文資訊
-*/
+ */
 export const ArticleDetailPost = async (req, res, next) => {
   const Catalog = await ArticleCatalog.findOne({
     catalog: req.body.catalog
-  })
+  });
 
-  if (!Catalog) {
-    // ** 找不到就新增
-    res.send('找不到 catalog')
+  if (Catalog.length) {
+    successHandle(res, '此文章分類已存在', Catalog);
+    return
   }
 
   const Outline = await ArticleOutline.create({
     title: req.body.title,
     image: req.body.image,
     catalog: Catalog._id,
-  })
+  });
 
   const Detail = await ArticleDetail.create({
     outline: Outline._id,
     contents: req.body.contents
-  })
+  });
 
   successHandle(res, '成功新增內文', Detail);
 };

@@ -2,6 +2,8 @@
 // 成功事件回應
 import successHandle from '../service/successHandle.js'
 
+import { validationResult } from 'express-validator/check/index.js'
+
 // image model
 import { Image } from '../models/image.model.js'
 
@@ -14,7 +16,8 @@ const { ImgurClient } = imgur
 */
 export const PostImage = async (req, res, next) => {
   if (!req.files?.length) {
-    res.status(404).send('無圖片上傳！');
+    res.status(404).send('無圖片上傳');
+    return
   }
 
   const client = new ImgurClient({
@@ -52,6 +55,7 @@ export const DeleteImage = async (req, res, next) => {
 
   if (!hash) {
     res.status(404).send('請提供 deleteHash');
+    return
   }
 
   const client = new ImgurClient({
