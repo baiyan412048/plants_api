@@ -1,4 +1,5 @@
 import multer from 'multer'
+import path from 'path'
 
 const limits = {
   fileSize: 2 * 1024 * 1024
@@ -9,11 +10,16 @@ const limits = {
 */
 const checkUpload = multer({
   limits,
-  fileFilter(req, file, next) {
-    if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|WEBP|webp)$/)) {
-      next(new Error('檔案格式錯誤，僅限上傳 jpg、jpeg 與 png 格式。'))
+  fileFilter(req, file, cb) {
+    const allowedTypes = /jpeg|JPEG|jpg|JPG|png|PNG|gif/
+    const mimeType = allowedTypes.test(file.mimetype)
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase())
+
+    if (mimeType && extname) {
+      return cb(null, true)
     }
-    next(null, true)
+
+    cb('Error: 檔案格式錯誤')
   }
 }).any()
 

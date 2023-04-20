@@ -6,12 +6,6 @@ import { checkUpload } from '../middlewares/multer.js'
 
 import { PostImage, DeleteImage } from '../controllers/image.controller.js'
 
-// CMS
-// 取得圖片
-router.get('/', (req, res, next) => {
-  res.send('GET IMAGE');
-});
-
 // 上傳圖片
 router.post('/', checkUpload, PostImage);
 
