@@ -1,8 +1,7 @@
-
 // 成功事件回應
 import successHandle from '../service/successHandle.js'
 
-import { validationResult } from 'express-validator/check/index.js'
+// import { validationResult } from 'express-validator/check/index.js'
 
 // image model
 import { Image } from '../models/image.model.js'
@@ -11,12 +10,12 @@ import { Image } from '../models/image.model.js'
 import imgur from 'imgur'
 const { ImgurClient } = imgur
 
-/** 
+/**
  * 上傳圖片 POST
-*/
+ */
 export const PostImage = async (req, res, next) => {
   if (!req.files?.length) {
-    res.status(404).send('無圖片上傳');
+    res.status(404).send('無圖片上傳')
     return
   }
 
@@ -24,7 +23,7 @@ export const PostImage = async (req, res, next) => {
     clientId: process.env.IMGUR_CLIENTID,
     clientSecret: process.env.IMGUR_CLIENT_SECRET,
     refreshToken: process.env.IMGUR_REFRESH_TOKEN
-  });
+  })
 
   const images = []
 
@@ -34,7 +33,7 @@ export const PostImage = async (req, res, next) => {
       image: file.buffer.toString('base64'),
       type: 'base64',
       album: process.env.IMGUR_ALBUM_ID
-    });
+    })
 
     const option = {
       uid: response.data.id,
@@ -42,19 +41,19 @@ export const PostImage = async (req, res, next) => {
       deleteHash: response.data.deletehash
     }
 
-    await Image.create(option);
+    await Image.create(option)
 
-    images.push(response.data);
+    images.push(response.data)
   }
 
-  successHandle(res, '成功新增圖片', images);
+  successHandle(res, '成功新增圖片', images)
 }
 
 export const DeleteImage = async (req, res, next) => {
   const { hash } = req.params
 
   if (!hash) {
-    res.status(404).send('請提供 deleteHash');
+    res.status(404).send('請提供 deleteHash')
     return
   }
 
@@ -62,20 +61,20 @@ export const DeleteImage = async (req, res, next) => {
     clientId: process.env.IMGUR_CLIENTID,
     clientSecret: process.env.IMGUR_CLIENT_SECRET,
     refreshToken: process.env.IMGUR_REFRESH_TOKEN
-  });
+  })
 
   const image = await Image.findOne({
     deleteHash: hash
-  });
+  })
 
   if (!image) {
-    res.status(404).send('無此圖片');
+    res.status(404).send('無此圖片')
     return
   }
 
-  await Image.findByIdAndDelete(image._id);
+  await Image.findByIdAndDelete(image._id)
 
-  await client.deleteImage(hash);
+  await client.deleteImage(hash)
 
-  successHandle(res, '成功刪除圖片', image);
+  successHandle(res, '成功刪除圖片', image)
 }

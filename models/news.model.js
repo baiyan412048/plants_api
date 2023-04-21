@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose'
 
 // import moment from 'moment';
 
@@ -11,17 +11,17 @@ const NewsCatalogSchema = new Schema(
       type: String,
       required: [true, '分類名 為必填'],
       max: 10
-    },
+    }
   },
   {
     timestamps: true
   }
-);
+)
 
 /**
  * news catalog model
  */
-export const NewsCatalog = mongoose.model('News_catalog', NewsCatalogSchema);
+export const NewsCatalog = mongoose.model('News_catalog', NewsCatalogSchema)
 
 /**
  * news outline schema
@@ -40,12 +40,12 @@ const NewsOutlineSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'News_catalog',
       required: [true, '分類 為必選']
-    },
+    }
   },
   {
     timestamps: true
   }
-);
+)
 
 /**
  * news outline model
@@ -74,7 +74,7 @@ const NewsDetailSchema = new Schema(
           default: []
         },
         content: {
-          type: String,
+          type: String
         }
       }
     ]
@@ -82,7 +82,7 @@ const NewsDetailSchema = new Schema(
   {
     timestamps: true
   }
-);
+)
 
 /**
  * news detail model

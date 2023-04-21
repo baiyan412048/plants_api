@@ -1,38 +1,38 @@
-import { Router } from 'express';
-const router = Router();
+import { Router } from 'express'
 
-import { faq }  from './faq.router.js';
-import { about } from './about.router.js';
-import { article } from './article.router.js';
-import { news } from './news.router.js';
-import { product } from './product.router.js';
-import { checkout } from './checkout.router.js';
-import { member } from './member.router.js';
-import { contact } from './contact.router.js';
-import { image } from './image.router.js';
+import { faq } from './faq.router.js'
+import { about } from './about.router.js'
+import { article } from './article.router.js'
+import { news } from './news.router.js'
+import { product } from './product.router.js'
+import { checkout } from './checkout.router.js'
+import { member } from './member.router.js'
+import { contact } from './contact.router.js'
+import { image } from './image.router.js'
+const router = Router()
 
 // 首頁
-router.get('/', function(req, res, next) {
-  res.send('前端畫面 API');
-});
+router.get('/', function (req, res, next) {
+  res.send('前端畫面 API')
+})
 
 // 關於我們
-router.use('/about', about);
+router.use('/about', about)
 // 常見問題
-router.use('/faq', faq);
+router.use('/faq', faq)
 // 文章專欄
-router.use('/article', article);
+router.use('/article', article)
 // 最新消息
-router.use('/news', news);
+router.use('/news', news)
 // 植物觀園
-router.use('/product', product);
+router.use('/product', product)
 // 結帳流程
-router.use('/checkout', checkout);
+router.use('/checkout', checkout)
 // 會員中心
-router.use('/member', member);
+router.use('/member', member)
 // 聯絡我們
-router.use('/contact', contact);
+router.use('/contact', contact)
 // 圖片相關 - 取得、上傳、刪除
-router.use('/image', image);
+router.use('/image', image)
 
-export default router;
+export default router

@@ -1,5 +1,4 @@
-
-const successHandle = ( res, message, data ) => {
+const successHandle = (res, message, data) => {
   res.send({
     message,
     data

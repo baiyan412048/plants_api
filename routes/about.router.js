@@ -1,17 +1,17 @@
-import { Router } from 'express';
-const router = Router();
+import { Router } from 'express'
+const router = Router()
 
 // WEB
-router.get('/', function(req, res, next) {
-  res.send('ABOUT PAGE');
-});
+router.get('/', function (req, res, next) {
+  res.send('ABOUT PAGE')
+})
 
-router.get('/serve', function(req, res, next) {
-  res.send('ABOUT SERVE PAGE');
-});
+router.get('/serve', function (req, res, next) {
+  res.send('ABOUT SERVE PAGE')
+})
 
-router.get('/store', function(req, res, next) {
-  res.send('ABOUT STORE PAGE');
-});
+router.get('/store', function (req, res, next) {
+  res.send('ABOUT STORE PAGE')
+})
 
 export { router as about }
