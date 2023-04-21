@@ -104,7 +104,7 @@ export const ArticleDeleteCatalog = async (req, res, next) => {
     _id
   });
   if (!isExist) {
-    successHandle(res, '此文章分類不存在', isExist);
+    res.status(400).send('此文章分類不存在');
     return
   }
 
@@ -131,7 +131,7 @@ export const  ArticlePutCatalog  = async (req, res, next) => {
     _id
   });
   if (!isExist) {
-    successHandle(res, '此文章分類不存在', isExist);
+    res.status(400).send('此文章分類不存在');
   }
 
   const Catalog = await ArticleCatalog.findByIdAndUpdate(_id, {
@@ -165,7 +165,7 @@ export const ArticlePostDetail = async (req, res, next) => {
   });
 
   if (!Catalog) {
-    successHandle(res, '此文章分類不存在', Catalog);
+    res.status(400).send('此文章分類不存在');
     return
   }
 
@@ -196,6 +196,23 @@ export const ArticleGetDetail = async (req, res, next) => {
 
   if (!Catalog) {
     res.status(400).send('找不到此文章分類');
+    return
+  }
+
+  if (!title) {
+    const Detail = await ArticleDetail.find().populate({
+      path: 'outline',
+      populate: {
+        path: 'catalog',
+        match: {
+          catalog: Catalog.catalog
+        }
+      }
+    }).exec()
+
+    const filter = Detail.filter(detail => detail.outline.catalog !== null);
+
+    successHandle(res, '成功取得文章', filter);
     return
   }
 
@@ -260,5 +277,22 @@ export const ArticlePutDetail = async (req, res, next) => {
  * 刪除特定文章
  */
 export const ArticleDeleteDetail = async (req, res, next) => {
+  const { id } = req.body
 
+  const isExist = await ArticleDetail.findById({
+    _id: id
+  })
+  if (!isExist) {
+    res.status(400).send('找不到此文章');
+  }
+
+  await ArticleOutline.deleteOne({
+    _id: isExist.outline._id
+  })
+
+  const Detail = await ArticleDetail.deleteOne({
+    _id: id
+  })
+
+  successHandle(res, '成功刪除文章', Detail);
 }

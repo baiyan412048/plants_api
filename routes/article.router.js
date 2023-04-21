@@ -27,8 +27,8 @@ router.get('/', ArticleGetOutlines);
 // 新增列表 & 內文資訊
 router.post('/detail', ArticlePostDetail);
 
-// 取得特定文章
-router.get('/:catalog/:title', ArticleGetDetail);
+// 取得同分類 | 特定文章
+router.get('/:catalog/:title?', ArticleGetDetail);
 
 // 修改特定文章
 router.put('/:catalog/:title', ArticlePutDetail);
