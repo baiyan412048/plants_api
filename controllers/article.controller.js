@@ -19,6 +19,7 @@ export const ArticleGetSetting = async (req, res, next) => {
 
   if (!Setting.length) {
     res.status(400).send('無單元設定被建立')
+    return
   }
 
   successHandle(res, '成功取得單元設定', Setting)
@@ -63,8 +64,9 @@ export const ArticlePostSetting = async (req, res, next) => {
 export const ArticleGetCatalogs = async (req, res, next) => {
   const Catalog = await ArticleCatalog.find()
 
-  if (!Catalog) {
+  if (!Catalog.length) {
     res.status(400).send('無文章分類被建立')
+    return
   }
 
   successHandle(res, '成功取得全部文章分類', Catalog)
@@ -136,6 +138,7 @@ export const ArticlePutCatalog = async (req, res, next) => {
   })
   if (!isExist) {
     res.status(400).send('此文章分類不存在')
+    return
   }
 
   const Catalog = await ArticleCatalog.findByIdAndUpdate(_id, {
@@ -153,6 +156,7 @@ export const ArticleGetOutlines = async (req, res, next) => {
 
   if (!Outline.length) {
     res.status(400).send('無文章簡介被建立')
+    return
   }
 
   successHandle(res, '成功取得文章簡介', Outline)
@@ -188,7 +192,7 @@ export const ArticlePostDetail = async (req, res, next) => {
 }
 
 /**
- * 取得特定文章
+ * 取得特定 | 全部文章
  */
 export const ArticleGetDetail = async (req, res, next) => {
   const { catalog, title } = req.params
@@ -260,6 +264,7 @@ export const ArticlePutDetail = async (req, res, next) => {
 
   if (!Detail) {
     res.status(400).send('找不到此文章')
+    return
   }
 
   const Catalog = await ArticleCatalog.findOne({
@@ -289,6 +294,7 @@ export const ArticleDeleteDetail = async (req, res, next) => {
   })
   if (!isExist) {
     res.status(400).send('找不到此文章')
+    return
   }
 
   await ArticleOutline.deleteOne({

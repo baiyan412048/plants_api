@@ -1,9 +1,37 @@
 import mongoose, { Schema } from 'mongoose'
 
-// import moment from 'moment';
+/**
+ * 最新消息單元設定 schema
+ */
+const NewsSettingSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: [true, '單元名 為必填'],
+      max: 20
+    },
+    banner: {
+      desktop: {
+        type: String,
+        required: [true, 'banner desktop 圖片 為必選']
+      },
+      mobile: {
+        type: String
+      }
+    }
+  },
+  {
+    timestamps: true
+  }
+)
 
 /**
- * news catalog schema
+ * 最新消息單元設定 model
+ */
+export const NewsSetting = mongoose.model('News_setting', NewsSettingSchema)
+
+/**
+ * 最新消息分類 schema
  */
 const NewsCatalogSchema = new Schema(
   {
@@ -19,12 +47,12 @@ const NewsCatalogSchema = new Schema(
 )
 
 /**
- * news catalog model
+ * 最新消息分類 model
  */
 export const NewsCatalog = mongoose.model('News_catalog', NewsCatalogSchema)
 
 /**
- * news outline schema
+ * 最新消息 outline schema
  */
 const NewsOutlineSchema = new Schema(
   {
@@ -48,12 +76,12 @@ const NewsOutlineSchema = new Schema(
 )
 
 /**
- * news outline model
+ * 最新消息 outline model
  */
 export const NewsOutline = mongoose.model('News_outline', NewsOutlineSchema)
 
 /**
- * news detail schema
+ * 最新消息內頁 schema
  */
 const NewsDetailSchema = new Schema(
   {
@@ -66,8 +94,8 @@ const NewsDetailSchema = new Schema(
       {
         style: {
           type: String,
-          enum: ['-single', '-double'],
-          default: '-single'
+          enum: ['single', 'double'],
+          default: 'single'
         },
         images: {
           type: Array,
@@ -85,6 +113,6 @@ const NewsDetailSchema = new Schema(
 )
 
 /**
- * news detail model
+ * 最新消息內頁 model
  */
 export const NewsDetail = mongoose.model('News_detail', NewsDetailSchema)
