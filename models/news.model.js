@@ -17,6 +17,11 @@ const NewsSettingSchema = new Schema(
       },
       mobile: {
         type: String
+      },
+      color: {
+        type: String,
+        enum: ['black', 'white'],
+        default: 'black'
       }
     }
   },
