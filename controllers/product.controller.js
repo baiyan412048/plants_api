@@ -158,11 +158,11 @@ export const ProductGetSize = async (req, res, next) => {
   const Size = await ProductSize.find()
 
   if (!Size.length) {
-    res.status(400).send('無產品分類被建立')
+    res.status(400).send('無產品尺寸被建立')
     return
   }
 
-  successHandle(res, '成功取得全部產品分類', Size)
+  successHandle(res, '成功取得全部產品尺寸', Size)
 }
 
 /**
@@ -172,7 +172,7 @@ export const ProductPostSize = async (req, res, next) => {
   const { size } = req.body
 
   if (!size) {
-    res.status(400).send('請確認分類名稱')
+    res.status(400).send('請確認尺寸名稱')
     return
   }
 
@@ -181,7 +181,7 @@ export const ProductPostSize = async (req, res, next) => {
   })
 
   if (isExist) {
-    successHandle(res, '此產品分類已存在', isExist)
+    successHandle(res, '此產品尺寸已存在', isExist)
     return
   }
 
@@ -189,7 +189,7 @@ export const ProductPostSize = async (req, res, next) => {
     size
   })
 
-  successHandle(res, '成功新增產品分類', Size)
+  successHandle(res, '成功新增產品尺寸', Size)
 }
 
 /**
@@ -203,20 +203,20 @@ export const ProductDeleteSize = async (req, res, next) => {
     _id
   })
   if (!isExist) {
-    res.status(400).send('此產品分類不存在')
+    res.status(400).send('此產品尺寸不存在')
     return
   }
 
   const Outline = await ProductOutline.find({}).populate('size').exec()
   const filter = Outline.filter((outline) => outline.size._id === _id)
   if (filter.length) {
-    successHandle(res, `有其他產品仍在使用此分類 - ${size}`, filter)
+    successHandle(res, `有其他產品仍在使用此尺寸 - ${size}`, filter)
     return
   }
 
   const Result = await ProductSize.deleteOne({ _id })
 
-  successHandle(res, '成功刪除產品分類', Result)
+  successHandle(res, '成功刪除產品尺寸', Result)
 }
 
 /**
@@ -248,11 +248,11 @@ export const ProductGetDiff = async (req, res, next) => {
   const Diff = await ProductDiff.find()
 
   if (!Diff.length) {
-    res.status(400).send('無產品分類被建立')
+    res.status(400).send('無產品難易度被建立')
     return
   }
 
-  successHandle(res, '成功取得全部產品分類', Diff)
+  successHandle(res, '成功取得全部產品難易度', Diff)
 }
 
 /**
@@ -262,7 +262,7 @@ export const ProductPostDiff = async (req, res, next) => {
   const { diff } = req.body
 
   if (!diff) {
-    res.status(400).send('請確認分類名稱')
+    res.status(400).send('請確認難易度名稱')
     return
   }
 
@@ -271,7 +271,7 @@ export const ProductPostDiff = async (req, res, next) => {
   })
 
   if (isExist) {
-    successHandle(res, '此產品分類已存在', isExist)
+    successHandle(res, '此產品難易度已存在', isExist)
     return
   }
 
@@ -279,7 +279,7 @@ export const ProductPostDiff = async (req, res, next) => {
     diff
   })
 
-  successHandle(res, '成功新增產品分類', Diff)
+  successHandle(res, '成功新增產品難易度', Diff)
 }
 
 /**
@@ -293,20 +293,20 @@ export const ProductDeleteDiff = async (req, res, next) => {
     _id
   })
   if (!isExist) {
-    res.status(400).send('此產品分類不存在')
+    res.status(400).send('此產品難易度不存在')
     return
   }
 
   const Outline = await ProductOutline.find({}).populate('diff').exec()
   const filter = Outline.filter((outline) => outline.diff._id === _id)
   if (filter.length) {
-    successHandle(res, `有其他產品仍在使用此分類 - ${diff}`, filter)
+    successHandle(res, `有其他產品仍在使用此難易度 - ${diff}`, filter)
     return
   }
 
   const Result = await ProductDiff.deleteOne({ _id })
 
-  successHandle(res, '成功刪除產品分類', Result)
+  successHandle(res, '成功刪除產品難易度', Result)
 }
 
 /**
@@ -425,7 +425,11 @@ export const ProductPutEnv = async (req, res, next) => {
  * 取得全部 Outline
  */
 export const ProductGetOutlines = async (req, res, next) => {
-  const Outline = await ProductOutline.find().populate('catalog')
+  const Outline = await ProductOutline.find()
+    .populate('catalog')
+    .populate('size')
+    .populate('diff')
+    .populate('env')
 
   if (!Outline.length) {
     res.status(400).send('無產品簡介被建立')

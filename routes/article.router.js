@@ -23,7 +23,7 @@ router.get('/setting', ArticleGetSetting)
 router.post('/setting', ArticlePostSetting)
 
 // 取得全部 Catalog
-router.get('/catalogs', ArticleGetCatalogs)
+router.get('/catalog', ArticleGetCatalogs)
 
 // 新增 Catalog
 router.post('/catalog', ArticlePostCatalog)
