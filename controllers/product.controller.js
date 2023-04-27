@@ -79,7 +79,7 @@ export const ProductGetCatalog = async (req, res, next) => {
  * 新增 Catalog
  */
 export const ProductPostCatalog = async (req, res, next) => {
-  const { catalog } = req.body
+  const { catalog, type } = req.body
 
   if (!catalog) {
     res.status(400).send('請確認分類名稱')
@@ -96,7 +96,8 @@ export const ProductPostCatalog = async (req, res, next) => {
   }
 
   const Catalog = await ProductCatalog.create({
-    catalog
+    catalog,
+    type
   })
 
   successHandle(res, '成功新增產品分類', Catalog)
@@ -463,8 +464,32 @@ export const ProductPostDetail = async (req, res, next) => {
   const Catalog = await ProductCatalog.findOne({
     catalog
   })
+  const Size = await ProductSize.findOne({
+    size
+  })
+  const Diff = await ProductDiff.findOne({
+    diff
+  })
+  const Env = await ProductEnv.findOne({
+    env
+  })
 
   if (!Catalog) {
+    res.status(400).send('此產品分類不存在')
+    return
+  }
+
+  if (!Size) {
+    res.status(400).send('此產品分類不存在')
+    return
+  }
+
+  if (!Diff) {
+    res.status(400).send('此產品分類不存在')
+    return
+  }
+
+  if (!Env) {
     res.status(400).send('此產品分類不存在')
     return
   }
@@ -476,9 +501,9 @@ export const ProductPostDetail = async (req, res, next) => {
     type,
     price,
     stock,
-    size,
-    diff,
-    env
+    size: Size._id,
+    diff: Diff._id,
+    env: Env._id
   })
 
   const Detail = await ProductDetail.create({
