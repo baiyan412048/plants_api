@@ -451,7 +451,7 @@ export const ProductPostDetail = async (req, res, next) => {
     type,
     price,
     stock,
-    sliders,
+    slides,
     dep,
     size,
     diff,
@@ -508,7 +508,7 @@ export const ProductPostDetail = async (req, res, next) => {
 
   const Detail = await ProductDetail.create({
     outline: Outline._id,
-    sliders,
+    slides,
     dep,
     contents,
     package: packageService,
@@ -537,12 +537,23 @@ export const ProductGetDetail = async (req, res, next) => {
     const Detail = await ProductDetail.find()
       .populate({
         path: 'outline',
-        populate: {
-          path: 'catalog',
-          match: {
-            catalog: Catalog.catalog
+        populate: [
+          {
+            path: 'catalog',
+            match: {
+              catalog: Catalog.catalog
+            }
+          },
+          {
+            path: 'size'
+          },
+          {
+            path: 'diff'
+          },
+          {
+            path: 'env'
           }
-        }
+        ]
       })
       .exec()
 
@@ -566,9 +577,20 @@ export const ProductGetDetail = async (req, res, next) => {
     outline: Outline._id
   }).populate({
     path: 'outline',
-    populate: {
-      path: 'catalog'
-    }
+    populate: [
+      {
+        path: 'catalog'
+      },
+      {
+        path: 'size'
+      },
+      {
+        path: 'diff'
+      },
+      {
+        path: 'env'
+      }
+    ]
   })
 
   successHandle(res, '成功取得產品', Detail)
@@ -578,15 +600,42 @@ export const ProductGetDetail = async (req, res, next) => {
  * 更新特定產品
  */
 export const ProductPutDetail = async (req, res, next) => {
-  const { id, catalog, title, contents } = req.body
+  const {
+    id,
+    catalog,
+    title,
+    image,
+    type,
+    price,
+    stock,
+    slides,
+    dep,
+    size,
+    diff,
+    env,
+    contents,
+    package: packageService,
+    care
+  } = req.body
 
   const Detail = await ProductDetail.findOne({
     _id: id
   }).populate({
     path: 'outline',
-    populate: {
-      path: 'catalog'
-    }
+    populate: [
+      {
+        path: 'catalog'
+      },
+      {
+        path: 'size'
+      },
+      {
+        path: 'diff'
+      },
+      {
+        path: 'env'
+      }
+    ]
   })
 
   if (!Detail) {
@@ -597,14 +646,34 @@ export const ProductPutDetail = async (req, res, next) => {
   const Catalog = await ProductCatalog.findOne({
     catalog
   })
+  const Size = await ProductSize.findOne({
+    size
+  })
+  const Diff = await ProductDiff.findOne({
+    diff
+  })
+  const Env = await ProductEnv.findOne({
+    env
+  })
 
   const Outline = await ProductOutline.findByIdAndUpdate(Detail.outline._id, {
     catalog: Catalog._id,
-    title
+    title,
+    image,
+    type,
+    price,
+    stock,
+    size: Size._id,
+    diff: Diff._id,
+    env: Env._id
   })
 
   Detail.outline = Outline
+  Detail.slides = slides
+  Detail.dep = dep
   Detail.contents = contents
+  Detail.package = packageService
+  Detail.care = care
   Detail.save()
 
   successHandle(res, '成功更新產品', Detail)

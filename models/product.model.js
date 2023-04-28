@@ -196,7 +196,7 @@ const ProductDetailSchema = new Schema(
       ref: 'Product_outline',
       required: true
     },
-    sliders: {
+    slides: {
       type: Array,
       default: []
     },
