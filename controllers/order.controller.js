@@ -44,9 +44,9 @@ export const GetOrder = async (req, res, next) => {
  * 建立訂單
  */
 export const PostOrder = async (req, res, next) => {
-  const { member, list, bill, shipping, price } = req.body
+  const { member: id, list, bill, shipping, price } = req.body
 
-  if (!member) {
+  if (!id) {
     res.status(400).send('找不到會員資訊')
   }
 
@@ -67,7 +67,7 @@ export const PostOrder = async (req, res, next) => {
   }
 
   const Order = await OrderModel.create({
-    member,
+    member: id,
     list,
     bill,
     shipping,
@@ -75,7 +75,35 @@ export const PostOrder = async (req, res, next) => {
   })
 
   // 更新對應會員的訂單
-  await MemberModel.findByIdAndUpdate(member, { $push: { order: Order._id } })
+  await MemberModel.findByIdAndUpdate(id, { $push: { order: Order._id } })
 
   successHandle(res, '成功新增訂單', Order)
+}
+
+/**
+ * 刪除訂單
+ */
+export const DeleteOrder = async (req, res, next) => {
+  const { member, order } = req.params
+
+  const isExist = await OrderModel.findOne({
+    _id: order
+  })
+
+  if (!isExist) {
+    res.status(400).send('找不到此訂單')
+  }
+
+  const Order = await OrderModel.deleteOne({
+    _id: order
+  })
+
+  // 刪除對應會員訂單資料
+  await MemberModel.findByIdAndUpdate(
+    member,
+    { $pull: { order } },
+    { new: true }
+  )
+
+  successHandle(res, '成功刪除訂單', Order)
 }

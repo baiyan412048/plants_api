@@ -14,20 +14,24 @@ export const GetMember = async (req, res, next) => {
 
   const Specific = await MemberModel.findOne({
     _id: id
-  }).populate({
-    path: 'order',
-    populate: [
-      {
-        path: 'list.product',
-        populate: {
-          path: 'outline'
-        }
-      },
-      {
-        path: 'list.purchase'
-      }
-    ]
   })
+    .populate({
+      path: 'order',
+      populate: [
+        {
+          path: 'list.product',
+          populate: {
+            path: 'outline'
+          }
+        },
+        {
+          path: 'list.purchase'
+        }
+      ]
+    })
+    .populate({
+      path: 'favorite'
+    })
 
   if (!id) {
     const Member = await MemberModel.find()
@@ -62,13 +66,11 @@ export const PostMember = async (req, res, next) => {
  * 更新會員資料
  */
 export const PutMember = async (req, res, next) => {
-  const { id, image, name, email, password, phone, address, birthday, order } =
+  const { id, image, name, email, password, phone, address, birthday } =
     req.body
 
   const Member = await MemberModel.findOne({
     _id: id
-  }).populate({
-    path: 'order'
   })
 
   if (!Member) {
@@ -83,10 +85,51 @@ export const PutMember = async (req, res, next) => {
   if (phone && phone !== '') Member.phone = phone
   if (address && address !== '') Member.address = address
   if (birthday && birthday !== '') Member.birthday = birthday
-  if (order && order !== '') Member.order = order
   Member.save()
 
-  successHandle(res, '成功更新會員', Member)
+  successHandle(res, '成功更新會員資料', Member)
+}
+
+/**
+ * 加入我的最愛
+ */
+export const PostFavoriteProduct = async (req, res, next) => {
+  const { id } = req.params
+  const { productId } = req.body
+
+  if (!productId) {
+    res.status(400).send('找不到產品')
+    return
+  }
+
+  // 新增我的最愛商品
+  const Member = await MemberModel.findByIdAndUpdate(id, {
+    $push: { favorite: productId }
+  })
+
+  successHandle(res, '成功新增我的最愛商品', Member)
+}
+
+/**
+ * 刪除我的最愛
+ */
+export const DeleteFavoriteProduct = async (req, res, next) => {
+  const { id } = req.params
+  const { productId } = req.body
+
+  if (!productId) {
+    res.status(400).send('找不到產品')
+    return
+  }
+
+  // 刪除我的最愛商品
+  const Member = await MemberModel.findByIdAndUpdate(
+    id,
+    { $pull: { favorite: productId } },
+    { new: true }
+  )
+
+  successHandle(res, '成功刪除我的最愛商品', Member)
 }
 
 /**
@@ -108,24 +151,4 @@ export const MemberLogin = async (req, res, next) => {
   }
 
   successHandle(res, '成功登入會員', Member)
-}
-
-/**
- * 加入我的最愛
- */
-export const AddFavoriteProduct = async (req, res, next) => {
-  const { id, product } = req.body
-
-  const Member = await MemberModel.findOne({
-    _id: id
-  }).populate({
-    path: 'favorite'
-  })
-
-  // if (!Member) {
-  //   res.status(400).send('email 或 密碼輸入錯誤')
-  //   return
-  // }
-
-  // successHandle(res, '成功登入會員', Member)
 }

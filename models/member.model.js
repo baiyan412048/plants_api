@@ -40,7 +40,7 @@ const MemberSchema = new Schema(
     favorite: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product_detail'
+        ref: 'Product_outline'
       }
     ],
     order: [

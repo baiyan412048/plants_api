@@ -103,25 +103,24 @@ export const ArticlePostCatalog = async (req, res, next) => {
  * 刪除 Catalog
  */
 export const ArticleDeleteCatalog = async (req, res, next) => {
-  const { catalog } = req.params
-  const { _id } = req.body
+  const { id } = req.params
 
   const isExist = await ArticleCatalog.findById({
-    _id
+    _id: id
   })
   if (!isExist) {
     res.status(400).send('此文章分類不存在')
     return
   }
 
-  const Outline = await ArticleOutline.find({}).populate('catalog').exec()
-  const filter = Outline.filter((outline) => outline.catalog._id === _id)
+  const Outline = await ArticleOutline.find().populate('catalog')
+  const filter = Outline.filter((outline) => outline.catalog._id === id)
   if (filter.length) {
-    successHandle(res, `有其他文章仍在使用此分類 - ${catalog}`, filter)
+    successHandle(res, `有其他文章仍在使用此分類 - ${isExist.catalog}`, filter)
     return
   }
 
-  const Result = await ArticleCatalog.deleteOne({ _id })
+  const Result = await ArticleCatalog.deleteOne({ id })
 
   successHandle(res, '成功刪除文章分類', Result)
 }
@@ -130,18 +129,18 @@ export const ArticleDeleteCatalog = async (req, res, next) => {
  * 更新 Catalog
  */
 export const ArticlePutCatalog = async (req, res, next) => {
-  const { catalog } = req.params
-  const { _id } = req.body
+  const { id } = req.params
+  const { catalog } = req.body
 
   const isExist = await ArticleCatalog.findById({
-    _id
+    _id: id
   })
   if (!isExist) {
     res.status(400).send('此文章分類不存在')
     return
   }
 
-  const Catalog = await ArticleCatalog.findByIdAndUpdate(_id, {
+  const Catalog = await ArticleCatalog.findByIdAndUpdate(id, {
     catalog
   })
 
@@ -207,17 +206,15 @@ export const ArticleGetDetail = async (req, res, next) => {
   }
 
   if (!title) {
-    const Detail = await ArticleDetail.find()
-      .populate({
-        path: 'outline',
-        populate: {
-          path: 'catalog',
-          match: {
-            catalog: Catalog.catalog
-          }
+    const Detail = await ArticleDetail.find().populate({
+      path: 'outline',
+      populate: {
+        path: 'catalog',
+        match: {
+          catalog: Catalog.catalog
         }
-      })
-      .exec()
+      }
+    })
 
     const filter = Detail.filter((detail) => detail.outline.catalog !== null)
 
@@ -226,8 +223,8 @@ export const ArticleGetDetail = async (req, res, next) => {
   }
 
   const Outline = await ArticleOutline.findOne({
-    catalog: Catalog._id,
-    title
+    title,
+    catalog: Catalog._id
   })
 
   if (!Outline) {
@@ -251,7 +248,8 @@ export const ArticleGetDetail = async (req, res, next) => {
  * 更新特定文章
  */
 export const ArticlePutDetail = async (req, res, next) => {
-  const { id, catalog, title, contents } = req.body
+  const { id } = req.params
+  const { catalog, title, contents } = req.body
 
   const Detail = await ArticleDetail.findOne({
     _id: id
@@ -287,7 +285,7 @@ export const ArticlePutDetail = async (req, res, next) => {
  * 刪除特定文章
  */
 export const ArticleDeleteDetail = async (req, res, next) => {
-  const { id } = req.body
+  const { id } = req.params
 
   const isExist = await ArticleDetail.findById({
     _id: id

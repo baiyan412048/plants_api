@@ -29,10 +29,10 @@ router.get('/catalog', ArticleGetCatalogs)
 router.post('/catalog', ArticlePostCatalog)
 
 // 刪除 Catalog
-router.delete('/catalog/:catalog', ArticleDeleteCatalog)
+router.delete('/catalog/:id', ArticleDeleteCatalog)
 
 // 修改 Catalog
-router.put('/catalog/:catalog', ArticlePutCatalog)
+router.put('/catalog/:id', ArticlePutCatalog)
 
 // 取得全部 Outline
 router.get('/', ArticleGetOutlines)
@@ -41,12 +41,12 @@ router.get('/', ArticleGetOutlines)
 router.post('/detail', ArticlePostDetail)
 
 // 取得同分類 | 特定文章
-router.get('/:catalog/:title?', ArticleGetDetail)
+router.get('/:catalog/:id?', ArticleGetDetail)
 
 // 修改特定文章
-router.put('/:catalog/:title', ArticlePutDetail)
+router.put('/:catalog/:id', ArticlePutDetail)
 
 // 刪除特定文章
-router.delete('/:catalog/:title', ArticleDeleteDetail)
+router.delete('/:catalog/:id', ArticleDeleteDetail)
 
 export { router as article }
