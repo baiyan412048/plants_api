@@ -249,7 +249,7 @@ export const ArticleGetDetail = async (req, res, next) => {
  */
 export const ArticlePutDetail = async (req, res, next) => {
   const { id } = req.params
-  const { catalog, title, contents } = req.body
+  const { catalog, image, title, contents } = req.body
 
   const Detail = await ArticleDetail.findOne({
     _id: id
@@ -271,7 +271,8 @@ export const ArticlePutDetail = async (req, res, next) => {
 
   const Outline = await ArticleOutline.findByIdAndUpdate(Detail.outline._id, {
     catalog: Catalog._id,
-    title
+    title,
+    image
   })
 
   Detail.outline = Outline

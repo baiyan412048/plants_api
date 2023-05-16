@@ -103,25 +103,28 @@ export const NewsPostCatalog = async (req, res, next) => {
  * 刪除 Catalog
  */
 export const NewsDeleteCatalog = async (req, res, next) => {
-  const { catalog } = req.params
-  const { _id } = req.body
+  const { id } = req.params
 
   const isExist = await NewsCatalog.findById({
-    _id
+    _id: id
   })
   if (!isExist) {
     res.status(400).send('此最新消息分類不存在')
     return
   }
 
-  const Outline = await NewsOutline.find({}).populate('catalog').exec()
-  const filter = Outline.filter((outline) => outline.catalog._id === _id)
+  const Outline = await NewsOutline.find().populate('catalog')
+  const filter = Outline.filter((outline) => outline.catalog._id === id)
   if (filter.length) {
-    successHandle(res, `有其他最新消息仍在使用此分類 - ${catalog}`, filter)
+    successHandle(
+      res,
+      `有其他最新消息仍在使用此分類 - ${isExist.catalog}`,
+      filter
+    )
     return
   }
 
-  const Result = await NewsCatalog.deleteOne({ _id })
+  const Result = await NewsCatalog.deleteOne({ _id: id })
 
   successHandle(res, '成功刪除最新消息分類', Result)
 }
@@ -130,18 +133,18 @@ export const NewsDeleteCatalog = async (req, res, next) => {
  * 更新 Catalog
  */
 export const NewsPutCatalog = async (req, res, next) => {
-  const { catalog } = req.params
-  const { _id } = req.body
+  const { id } = req.params
+  const { catalog } = req.body
 
   const isExist = await NewsCatalog.findById({
-    _id
+    _id: id
   })
   if (!isExist) {
     res.status(400).send('此最新消息分類不存在')
     return
   }
 
-  const Catalog = await NewsCatalog.findByIdAndUpdate(_id, {
+  const Catalog = await NewsCatalog.findByIdAndUpdate(id, {
     catalog
   })
 
@@ -249,7 +252,8 @@ export const NewsGetDetail = async (req, res, next) => {
  * 更新特定最新消息
  */
 export const NewsPutDetail = async (req, res, next) => {
-  const { id, catalog, title, contents } = req.body
+  const { id } = req.params
+  const { catalog, image, title, contents } = req.body
 
   const Detail = await NewsDetail.findOne({
     _id: id
@@ -271,7 +275,8 @@ export const NewsPutDetail = async (req, res, next) => {
 
   const Outline = await NewsOutline.findByIdAndUpdate(Detail.outline._id, {
     catalog: Catalog._id,
-    title
+    title,
+    image
   })
 
   Detail.outline = Outline
@@ -285,7 +290,7 @@ export const NewsPutDetail = async (req, res, next) => {
  * 刪除特定最新消息
  */
 export const NewsDeleteDetail = async (req, res, next) => {
-  const { id } = req.body
+  const { id } = req.params
 
   const isExist = await NewsDetail.findById({
     _id: id
