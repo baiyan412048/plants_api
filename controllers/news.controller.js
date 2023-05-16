@@ -207,17 +207,15 @@ export const NewsGetDetail = async (req, res, next) => {
   }
 
   if (!title) {
-    const Detail = await NewsDetail.find()
-      .populate({
-        path: 'outline',
-        populate: {
-          path: 'catalog',
-          match: {
-            catalog: Catalog.catalog
-          }
+    const Detail = await NewsDetail.find().populate({
+      path: 'outline',
+      populate: {
+        path: 'catalog',
+        match: {
+          catalog: Catalog.catalog
         }
-      })
-      .exec()
+      }
+    })
 
     const filter = Detail.filter((detail) => detail.outline.catalog !== null)
 

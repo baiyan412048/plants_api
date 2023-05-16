@@ -7,6 +7,7 @@ import { news } from './news.router.js'
 import { product } from './product.router.js'
 import { checkout } from './checkout.router.js'
 import { member } from './member.router.js'
+import { order } from './order.router.js'
 import { contact } from './contact.router.js'
 import { image } from './image.router.js'
 const router = Router()
@@ -30,6 +31,8 @@ router.use('/product', product)
 router.use('/checkout', checkout)
 // 會員中心
 router.use('/member', member)
+// 會員訂單
+router.use('/order', order)
 // 聯絡我們
 router.use('/contact', contact)
 // 圖片相關 - 取得、上傳、刪除

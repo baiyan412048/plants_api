@@ -40,8 +40,6 @@ app.use(cookieParser())
 
 // 前端畫面 API
 app.use('/api', router)
-// app.use('/users', router);
-// app.use('/statement', statementRouter);
 
 // error handler
 app.use((err, req, res, next) => {

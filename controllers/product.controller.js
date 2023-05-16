@@ -10,6 +10,8 @@ import {
   ProductSize,
   ProductDiff,
   ProductEnv,
+  ProductDiscount,
+  ProductPurchase,
   ProductOutline,
   ProductDetail
 } from '../models/product.model.js'
@@ -118,7 +120,7 @@ export const ProductDeleteCatalog = async (req, res, next) => {
     return
   }
 
-  const Outline = await ProductOutline.find({}).populate('catalog').exec()
+  const Outline = await ProductOutline.find({}).populate('catalog')
   const filter = Outline.filter((outline) => outline.catalog._id === _id)
   if (filter.length) {
     successHandle(res, `有其他產品仍在使用此分類 - ${catalog}`, filter)
@@ -208,7 +210,7 @@ export const ProductDeleteSize = async (req, res, next) => {
     return
   }
 
-  const Outline = await ProductOutline.find({}).populate('size').exec()
+  const Outline = await ProductOutline.find({}).populate('size')
   const filter = Outline.filter((outline) => outline.size._id === _id)
   if (filter.length) {
     successHandle(res, `有其他產品仍在使用此尺寸 - ${size}`, filter)
@@ -298,7 +300,7 @@ export const ProductDeleteDiff = async (req, res, next) => {
     return
   }
 
-  const Outline = await ProductOutline.find({}).populate('diff').exec()
+  const Outline = await ProductOutline.find({}).populate('diff')
   const filter = Outline.filter((outline) => outline.diff._id === _id)
   if (filter.length) {
     successHandle(res, `有其他產品仍在使用此難易度 - ${diff}`, filter)
@@ -388,7 +390,7 @@ export const ProductDeleteEnv = async (req, res, next) => {
     return
   }
 
-  const Outline = await ProductOutline.find({}).populate('env').exec()
+  const Outline = await ProductOutline.find({}).populate('env')
   const filter = Outline.filter((outline) => outline.env._id === _id)
   if (filter.length) {
     successHandle(res, `有其他產品仍在使用此分類 - ${env}`, filter)
@@ -423,6 +425,218 @@ export const ProductPutEnv = async (req, res, next) => {
 }
 
 /**
+ * 取得特定 | 全部 Discount
+ */
+export const ProductGetDiscount = async (req, res, next) => {
+  const { name } = req.params
+
+  if (!name) {
+    const Discount = await ProductDiscount.find()
+
+    if (!Discount.length) {
+      res.status(400).send('無產品優惠被建立')
+      return
+    }
+
+    successHandle(res, '成功取得全部產品優惠', Discount)
+    return
+  }
+
+  const Discount = await ProductDiscount.findOne({
+    name
+  })
+
+  successHandle(res, '成功取得特定產品優惠', Discount)
+}
+
+/**
+ * 新增 Discount
+ */
+export const ProductPostDiscount = async (req, res, next) => {
+  const { title, content, image, method } = req.body
+
+  if (!title) {
+    res.status(400).send('請確認產品優惠標題')
+    return
+  }
+
+  const isExist = await ProductDiscount.findOne({
+    title
+  })
+
+  if (isExist) {
+    successHandle(res, '此產品優惠已存在', isExist)
+    return
+  }
+
+  const Discount = await ProductDiscount.create({
+    title,
+    content,
+    image,
+    method
+  })
+
+  successHandle(res, '成功新增產品優惠', Discount)
+}
+
+/**
+ * 刪除 Discount
+ */
+export const ProductDeleteDiscount = async (req, res, next) => {
+  const { discount } = req.params
+  const { _id } = req.body
+
+  const isExist = await ProductDiscount.findById({
+    _id
+  })
+  if (!isExist) {
+    res.status(400).send('此優惠資訊不存在')
+    return
+  }
+
+  const Outline = await ProductOutline.find({}).populate('discount')
+  const filter = Outline.filter((outline) => outline.discount._id === _id)
+  if (filter.length) {
+    successHandle(res, `有其他產品仍在使用此優惠資訊 - ${discount}`, filter)
+    return
+  }
+
+  const Result = await ProductDiscount.deleteOne({ _id })
+
+  successHandle(res, '成功刪除優惠資訊', Result)
+}
+
+/**
+ * 更新 Discount
+ */
+export const ProductPutDiscount = async (req, res, next) => {
+  const { discount } = req.params
+  const { _id } = req.body
+
+  const isExist = await ProductDiscount.findById({
+    _id
+  })
+  if (!isExist) {
+    res.status(400).send('此優惠資訊不存在')
+    return
+  }
+
+  const Discount = await ProductDiscount.findByIdAndUpdate(_id, {
+    discount
+  })
+
+  successHandle(res, '已成功更新優惠資訊', Discount)
+}
+
+/**
+ * 取得全部 Purchase
+ */
+export const ProductGetPurchase = async (req, res, next) => {
+  const { title } = req.params
+
+  if (!title) {
+    const Purchase = await ProductPurchase.find()
+
+    if (!Purchase.length) {
+      res.status(400).send('無加購商品被建立')
+      return
+    }
+
+    successHandle(res, '成功取得全部加購商品', Purchase)
+    return
+  }
+
+  const Purchase = await ProductPurchase.findOne({
+    title
+  })
+
+  successHandle(res, '成功取得特定加購商品', Purchase)
+}
+
+/**
+ * 新增 Purchase
+ */
+export const ProductPostPurchase = async (req, res, next) => {
+  const { title, dep, image, price, stock } = req.body
+
+  if (!title) {
+    res.status(400).send('請確認加購商品名稱')
+    return
+  }
+
+  const isExist = await ProductPurchase.findOne({
+    title
+  })
+
+  if (isExist) {
+    successHandle(res, '此加購商品已存在', isExist)
+    return
+  }
+
+  const Purchase = await ProductPurchase.create({
+    title,
+    dep,
+    image,
+    price,
+    stock
+  })
+
+  successHandle(res, '成功新增加購商品', Purchase)
+}
+
+/**
+ * 刪除 Purchase
+ */
+export const ProductDeletePurchase = async (req, res, next) => {
+  const { purchase } = req.params
+  const { _id } = req.body
+
+  const isExist = await ProductPurchase.findById({
+    _id
+  })
+  if (!isExist) {
+    res.status(400).send('此加購商品不存在')
+    return
+  }
+
+  const Outline = await ProductOutline.find({}).populate('purchase')
+  const filter = Outline.filter((outline) => outline.purchase._id === _id)
+  if (filter.length) {
+    successHandle(res, `有其他產品仍在使用此加購商品 - ${purchase}`, filter)
+    return
+  }
+
+  const Result = await ProductPurchase.deleteOne({ _id })
+
+  successHandle(res, '成功刪除加購商品', Result)
+}
+
+/**
+ * 更新 Purchase
+ */
+export const ProductPutPurchase = async (req, res, next) => {
+  const { id, title, dep, image, price, stock } = req.body
+
+  const isExist = await ProductPurchase.findById({
+    _id: id
+  })
+  if (!isExist) {
+    res.status(400).send('此加購商品不存在')
+    return
+  }
+
+  const Purchase = await ProductPurchase.findByIdAndUpdate(id, {
+    title,
+    dep,
+    image,
+    price,
+    stock
+  })
+
+  successHandle(res, '已成功更新加購商品', Purchase)
+}
+
+/**
  * 取得全部 Outline
  */
 export const ProductGetOutlines = async (req, res, next) => {
@@ -453,6 +667,8 @@ export const ProductPostDetail = async (req, res, next) => {
     stock,
     slides,
     dep,
+    notes,
+    purchase,
     size,
     diff,
     env,
@@ -463,6 +679,11 @@ export const ProductPostDetail = async (req, res, next) => {
 
   const Catalog = await ProductCatalog.findOne({
     catalog
+  })
+  const Purchase = purchase.map(async (title) => {
+    return await ProductPurchase.findOne({
+      title
+    })._id
   })
   const Size = await ProductSize.findOne({
     size
@@ -510,6 +731,8 @@ export const ProductPostDetail = async (req, res, next) => {
     outline: Outline._id,
     slides,
     dep,
+    notes,
+    purchase: Purchase,
     contents,
     package: packageService,
     care
@@ -534,28 +757,26 @@ export const ProductGetDetail = async (req, res, next) => {
   }
 
   if (!title) {
-    const Detail = await ProductDetail.find()
-      .populate({
-        path: 'outline',
-        populate: [
-          {
-            path: 'catalog',
-            match: {
-              catalog: Catalog.catalog
-            }
-          },
-          {
-            path: 'size'
-          },
-          {
-            path: 'diff'
-          },
-          {
-            path: 'env'
+    const Detail = await ProductDetail.find().populate({
+      path: 'outline',
+      populate: [
+        {
+          path: 'catalog',
+          match: {
+            catalog: Catalog.catalog
           }
-        ]
-      })
-      .exec()
+        },
+        {
+          path: 'size'
+        },
+        {
+          path: 'diff'
+        },
+        {
+          path: 'env'
+        }
+      ]
+    })
 
     const filter = Detail.filter((detail) => detail.outline.catalog !== null)
 
@@ -575,23 +796,26 @@ export const ProductGetDetail = async (req, res, next) => {
 
   const Detail = await ProductDetail.findOne({
     outline: Outline._id
-  }).populate({
-    path: 'outline',
-    populate: [
-      {
-        path: 'catalog'
-      },
-      {
-        path: 'size'
-      },
-      {
-        path: 'diff'
-      },
-      {
-        path: 'env'
-      }
-    ]
   })
+    .populate({
+      path: 'outline',
+      populate: [
+        {
+          path: 'catalog'
+        },
+        {
+          path: 'size'
+        },
+        {
+          path: 'diff'
+        },
+        {
+          path: 'env'
+        }
+      ]
+    })
+    .populate('purchase')
+    .populate('discount')
 
   successHandle(res, '成功取得產品', Detail)
 }
@@ -610,6 +834,8 @@ export const ProductPutDetail = async (req, res, next) => {
     stock,
     slides,
     dep,
+    notes,
+    purchase,
     size,
     diff,
     env,
@@ -646,6 +872,11 @@ export const ProductPutDetail = async (req, res, next) => {
   const Catalog = await ProductCatalog.findOne({
     catalog
   })
+  const Purchase = purchase.map(async (title) => {
+    return await ProductPurchase.findOne({
+      title
+    })._id
+  })
   const Size = await ProductSize.findOne({
     size
   })
@@ -671,6 +902,8 @@ export const ProductPutDetail = async (req, res, next) => {
   Detail.outline = Outline
   Detail.slides = slides
   Detail.dep = dep
+  Detail.notes = notes
+  Detail.purchase = Purchase
   Detail.contents = contents
   Detail.package = packageService
   Detail.care = care

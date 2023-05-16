@@ -19,6 +19,14 @@ import {
   ProductPostEnv,
   ProductDeleteEnv,
   ProductPutEnv,
+  ProductGetDiscount,
+  ProductPostDiscount,
+  ProductDeleteDiscount,
+  ProductPutDiscount,
+  ProductGetPurchase,
+  ProductPostPurchase,
+  ProductDeletePurchase,
+  ProductPutPurchase,
   ProductGetOutlines,
   ProductPostDetail,
   ProductGetDetail,
@@ -81,6 +89,30 @@ router.delete('/env/:env', ProductDeleteEnv)
 
 // 修改 Env
 router.put('/env/:env', ProductPutEnv)
+
+// 取得全部 優惠資訊
+router.get('/discount', ProductGetDiscount)
+
+// 新增 優惠資訊
+router.post('/discount', ProductPostDiscount)
+
+// 刪除 優惠資訊
+router.delete('/discount/:id', ProductDeleteDiscount)
+
+// 修改 優惠資訊
+router.put('/discount/:id', ProductPutDiscount)
+
+// 取得全部 加購商品
+router.get('/purchase/:title?', ProductGetPurchase)
+
+// 新增 加購商品
+router.post('/purchase', ProductPostPurchase)
+
+// 刪除 加購商品
+router.delete('/purchase/:title', ProductDeletePurchase)
+
+// 修改 加購商品
+router.put('/purchase/:title', ProductPutPurchase)
 
 // 取得全部 Outline
 router.get('/', ProductGetOutlines)
