@@ -14,7 +14,7 @@ import {
 /**
  * 取得單元設定
  */
-export const NewsGetSetting = async (req, res, next) => {
+export const GetNewsSetting = async (req, res, next) => {
   const Setting = await NewsSetting.find()
 
   if (!Setting.length) {
@@ -28,7 +28,7 @@ export const NewsGetSetting = async (req, res, next) => {
 /**
  * 新增 & 修改單元設定
  */
-export const NewsPostSetting = async (req, res, next) => {
+export const PostNewsSetting = async (req, res, next) => {
   const { name, banner } = req.body
 
   const isExist = await NewsSetting.find()
@@ -61,7 +61,7 @@ export const NewsPostSetting = async (req, res, next) => {
 /**
  * 取得全部 Catalog
  */
-export const NewsGetCatalogs = async (req, res, next) => {
+export const GetNewsCatalog = async (req, res, next) => {
   const Catalog = await NewsCatalog.find()
 
   if (!Catalog.length) {
@@ -75,7 +75,7 @@ export const NewsGetCatalogs = async (req, res, next) => {
 /**
  * 新增 Catalog
  */
-export const NewsPostCatalog = async (req, res, next) => {
+export const PostNewsCatalog = async (req, res, next) => {
   const { catalog } = req.body
 
   if (!catalog) {
@@ -102,12 +102,10 @@ export const NewsPostCatalog = async (req, res, next) => {
 /**
  * 刪除 Catalog
  */
-export const NewsDeleteCatalog = async (req, res, next) => {
+export const DeleteNewsCatalog = async (req, res, next) => {
   const { id } = req.params
 
-  const isExist = await NewsCatalog.findById({
-    _id: id
-  })
+  const isExist = await NewsCatalog.findById(id)
   if (!isExist) {
     res.status(400).send('此最新消息分類不存在')
     return
@@ -132,13 +130,11 @@ export const NewsDeleteCatalog = async (req, res, next) => {
 /**
  * 更新 Catalog
  */
-export const NewsPutCatalog = async (req, res, next) => {
+export const PutNewsCatalog = async (req, res, next) => {
   const { id } = req.params
   const { catalog } = req.body
 
-  const isExist = await NewsCatalog.findById({
-    _id: id
-  })
+  const isExist = await NewsCatalog.findById(id)
   if (!isExist) {
     res.status(400).send('此最新消息分類不存在')
     return
@@ -154,7 +150,7 @@ export const NewsPutCatalog = async (req, res, next) => {
 /**
  * 取得全部 Outline
  */
-export const NewsGetOutlines = async (req, res, next) => {
+export const GetNewsOutline = async (req, res, next) => {
   const Outline = await NewsOutline.find().populate('catalog')
 
   if (!Outline.length) {
@@ -168,7 +164,7 @@ export const NewsGetOutlines = async (req, res, next) => {
 /**
  * 新增列表 & 內文資訊
  */
-export const NewsPostDetail = async (req, res, next) => {
+export const PostNewsDetail = async (req, res, next) => {
   const { catalog, title, image, contents } = req.body
 
   const Catalog = await NewsCatalog.findOne({
@@ -197,7 +193,7 @@ export const NewsPostDetail = async (req, res, next) => {
 /**
  * 取得特定 | 全部最新消息
  */
-export const NewsGetDetail = async (req, res, next) => {
+export const GetNewsDetail = async (req, res, next) => {
   const { catalog, title } = req.params
 
   const Catalog = await NewsCatalog.findOne({
@@ -251,13 +247,11 @@ export const NewsGetDetail = async (req, res, next) => {
 /**
  * 更新特定最新消息
  */
-export const NewsPutDetail = async (req, res, next) => {
+export const PutNewsDetail = async (req, res, next) => {
   const { id } = req.params
   const { catalog, image, title, contents } = req.body
 
-  const Detail = await NewsDetail.findOne({
-    _id: id
-  }).populate({
+  const Detail = await NewsDetail.findById(id).populate({
     path: 'outline',
     populate: {
       path: 'catalog'
@@ -289,12 +283,10 @@ export const NewsPutDetail = async (req, res, next) => {
 /**
  * 刪除特定最新消息
  */
-export const NewsDeleteDetail = async (req, res, next) => {
+export const DeleteNewsDetail = async (req, res, next) => {
   const { id } = req.params
 
-  const isExist = await NewsDetail.findById({
-    _id: id
-  })
+  const isExist = await NewsDetail.findById(id)
   if (!isExist) {
     res.status(400).send('找不到此最新消息')
     return

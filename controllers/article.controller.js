@@ -14,7 +14,7 @@ import {
 /**
  * 取得單元設定
  */
-export const ArticleGetSetting = async (req, res, next) => {
+export const GetArticleSetting = async (req, res, next) => {
   const Setting = await ArticleSetting.find()
 
   if (!Setting.length) {
@@ -28,7 +28,7 @@ export const ArticleGetSetting = async (req, res, next) => {
 /**
  * 新增 & 修改單元設定
  */
-export const ArticlePostSetting = async (req, res, next) => {
+export const PostArticleSetting = async (req, res, next) => {
   const { name, banner } = req.body
 
   const isExist = await ArticleSetting.find()
@@ -61,7 +61,7 @@ export const ArticlePostSetting = async (req, res, next) => {
 /**
  * 取得全部 Catalog
  */
-export const ArticleGetCatalogs = async (req, res, next) => {
+export const GetArticleCatalog = async (req, res, next) => {
   const Catalog = await ArticleCatalog.find()
 
   if (!Catalog.length) {
@@ -75,7 +75,7 @@ export const ArticleGetCatalogs = async (req, res, next) => {
 /**
  * 新增 Catalog
  */
-export const ArticlePostCatalog = async (req, res, next) => {
+export const PostArticleCatalog = async (req, res, next) => {
   const { catalog } = req.body
 
   if (!catalog) {
@@ -102,12 +102,10 @@ export const ArticlePostCatalog = async (req, res, next) => {
 /**
  * 刪除 Catalog
  */
-export const ArticleDeleteCatalog = async (req, res, next) => {
+export const DeleteArticleCatalog = async (req, res, next) => {
   const { id } = req.params
 
-  const isExist = await ArticleCatalog.findById({
-    _id: id
-  })
+  const isExist = await ArticleCatalog.findById(id)
   if (!isExist) {
     res.status(400).send('此文章分類不存在')
     return
@@ -128,13 +126,11 @@ export const ArticleDeleteCatalog = async (req, res, next) => {
 /**
  * 更新 Catalog
  */
-export const ArticlePutCatalog = async (req, res, next) => {
+export const PutArticleCatalog = async (req, res, next) => {
   const { id } = req.params
   const { catalog } = req.body
 
-  const isExist = await ArticleCatalog.findById({
-    _id: id
-  })
+  const isExist = await ArticleCatalog.findById(id)
   if (!isExist) {
     res.status(400).send('此文章分類不存在')
     return
@@ -150,7 +146,7 @@ export const ArticlePutCatalog = async (req, res, next) => {
 /**
  * 取得全部 Outline
  */
-export const ArticleGetOutlines = async (req, res, next) => {
+export const GetArticleOutline = async (req, res, next) => {
   const Outline = await ArticleOutline.find().populate('catalog')
 
   if (!Outline.length) {
@@ -164,7 +160,7 @@ export const ArticleGetOutlines = async (req, res, next) => {
 /**
  * 新增列表 & 內文資訊
  */
-export const ArticlePostDetail = async (req, res, next) => {
+export const PostArticleDetail = async (req, res, next) => {
   const { catalog, title, image, contents } = req.body
 
   const Catalog = await ArticleCatalog.findOne({
@@ -193,7 +189,7 @@ export const ArticlePostDetail = async (req, res, next) => {
 /**
  * 取得特定 | 全部文章
  */
-export const ArticleGetDetail = async (req, res, next) => {
+export const GetArticleDetail = async (req, res, next) => {
   const { catalog, title } = req.params
 
   const Catalog = await ArticleCatalog.findOne({
@@ -247,13 +243,11 @@ export const ArticleGetDetail = async (req, res, next) => {
 /**
  * 更新特定文章
  */
-export const ArticlePutDetail = async (req, res, next) => {
+export const PutArticleDetail = async (req, res, next) => {
   const { id } = req.params
   const { catalog, image, title, contents } = req.body
 
-  const Detail = await ArticleDetail.findOne({
-    _id: id
-  }).populate({
+  const Detail = await ArticleDetail.findById(id).populate({
     path: 'outline',
     populate: {
       path: 'catalog'
@@ -285,12 +279,10 @@ export const ArticlePutDetail = async (req, res, next) => {
 /**
  * 刪除特定文章
  */
-export const ArticleDeleteDetail = async (req, res, next) => {
+export const DeleteArticleDetail = async (req, res, next) => {
   const { id } = req.params
 
-  const isExist = await ArticleDetail.findById({
-    _id: id
-  })
+  const isExist = await ArticleDetail.findById(id)
   if (!isExist) {
     res.status(400).send('找不到此文章')
     return

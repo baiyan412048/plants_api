@@ -19,7 +19,7 @@ import {
 /**
  * 取得單元設定
  */
-export const ProductGetSetting = async (req, res, next) => {
+export const GetProductSetting = async (req, res, next) => {
   const Setting = await ProductSetting.find()
 
   if (!Setting.length) {
@@ -33,7 +33,7 @@ export const ProductGetSetting = async (req, res, next) => {
 /**
  * 新增 & 修改單元設定
  */
-export const ProductPostSetting = async (req, res, next) => {
+export const PostProductSetting = async (req, res, next) => {
   const { name, banner } = req.body
 
   const isExist = await ProductSetting.find()
@@ -66,7 +66,7 @@ export const ProductPostSetting = async (req, res, next) => {
 /**
  * 取得全部 Catalog
  */
-export const ProductGetCatalog = async (req, res, next) => {
+export const GetProductCatalog = async (req, res, next) => {
   const Catalog = await ProductCatalog.find()
 
   if (!Catalog.length) {
@@ -80,7 +80,7 @@ export const ProductGetCatalog = async (req, res, next) => {
 /**
  * 新增 Catalog
  */
-export const ProductPostCatalog = async (req, res, next) => {
+export const PostProductCatalog = async (req, res, next) => {
   const { catalog, type } = req.body
 
   if (!catalog) {
@@ -108,26 +108,23 @@ export const ProductPostCatalog = async (req, res, next) => {
 /**
  * 刪除 Catalog
  */
-export const ProductDeleteCatalog = async (req, res, next) => {
-  const { catalog } = req.params
-  const { _id } = req.body
+export const DeleteProductCatalog = async (req, res, next) => {
+  const { id } = req.params
 
-  const isExist = await ProductCatalog.findById({
-    _id
-  })
+  const isExist = await ProductCatalog.findById(id)
   if (!isExist) {
     res.status(400).send('此產品分類不存在')
     return
   }
 
   const Outline = await ProductOutline.find({}).populate('catalog')
-  const filter = Outline.filter((outline) => outline.catalog._id === _id)
+  const filter = Outline.filter((outline) => outline.catalog._id === id)
   if (filter.length) {
-    successHandle(res, `有其他產品仍在使用此分類 - ${catalog}`, filter)
+    successHandle(res, `有其他產品仍在使用此分類 - ${isExist.catalog}`, filter)
     return
   }
 
-  const Result = await ProductCatalog.deleteOne({ _id })
+  const Result = await ProductCatalog.deleteOne({ _id: id })
 
   successHandle(res, '成功刪除產品分類', Result)
 }
@@ -135,20 +132,19 @@ export const ProductDeleteCatalog = async (req, res, next) => {
 /**
  * 更新 Catalog
  */
-export const ProductPutCatalog = async (req, res, next) => {
-  const { catalog } = req.params
-  const { _id } = req.body
+export const PutProductCatalog = async (req, res, next) => {
+  const { id } = req.params
+  const { catalog, type } = req.body
 
-  const isExist = await ProductCatalog.findById({
-    _id
-  })
+  const isExist = await ProductCatalog.findById(id)
   if (!isExist) {
     res.status(400).send('此產品分類不存在')
     return
   }
 
-  const Catalog = await ProductCatalog.findByIdAndUpdate(_id, {
-    catalog
+  const Catalog = await ProductCatalog.findByIdAndUpdate(id, {
+    catalog,
+    type
   })
 
   successHandle(res, '已成功更新分類名稱', Catalog)
@@ -157,7 +153,7 @@ export const ProductPutCatalog = async (req, res, next) => {
 /**
  * 取得全部 Size
  */
-export const ProductGetSize = async (req, res, next) => {
+export const GetProductSize = async (req, res, next) => {
   const Size = await ProductSize.find()
 
   if (!Size.length) {
@@ -171,7 +167,7 @@ export const ProductGetSize = async (req, res, next) => {
 /**
  * 新增 Size
  */
-export const ProductPostSize = async (req, res, next) => {
+export const PostProductSize = async (req, res, next) => {
   const { size } = req.body
 
   if (!size) {
@@ -198,26 +194,23 @@ export const ProductPostSize = async (req, res, next) => {
 /**
  * 刪除 Size
  */
-export const ProductDeleteSize = async (req, res, next) => {
-  const { size } = req.params
-  const { _id } = req.body
+export const DeleteProductSize = async (req, res, next) => {
+  const { id } = req.params
 
-  const isExist = await ProductSize.findById({
-    _id
-  })
+  const isExist = await ProductSize.findById(id)
   if (!isExist) {
     res.status(400).send('此產品尺寸不存在')
     return
   }
 
   const Outline = await ProductOutline.find({}).populate('size')
-  const filter = Outline.filter((outline) => outline.size._id === _id)
+  const filter = Outline.filter((outline) => outline.size._id === id)
   if (filter.length) {
-    successHandle(res, `有其他產品仍在使用此尺寸 - ${size}`, filter)
+    successHandle(res, `有其他產品仍在使用此尺寸 - ${isExist.size}`, filter)
     return
   }
 
-  const Result = await ProductSize.deleteOne({ _id })
+  const Result = await ProductSize.deleteOne({ _id: id })
 
   successHandle(res, '成功刪除產品尺寸', Result)
 }
@@ -225,7 +218,7 @@ export const ProductDeleteSize = async (req, res, next) => {
 /**
  * 更新 Size
  */
-export const ProductPutSize = async (req, res, next) => {
+export const PutProductSize = async (req, res, next) => {
   const { size } = req.params
   const { _id } = req.body
 
@@ -247,7 +240,7 @@ export const ProductPutSize = async (req, res, next) => {
 /**
  * 取得全部 Diff
  */
-export const ProductGetDiff = async (req, res, next) => {
+export const GetProductDiff = async (req, res, next) => {
   const Diff = await ProductDiff.find()
 
   if (!Diff.length) {
@@ -261,7 +254,7 @@ export const ProductGetDiff = async (req, res, next) => {
 /**
  * 新增 Diff
  */
-export const ProductPostDiff = async (req, res, next) => {
+export const PostProductDiff = async (req, res, next) => {
   const { diff } = req.body
 
   if (!diff) {
@@ -288,26 +281,23 @@ export const ProductPostDiff = async (req, res, next) => {
 /**
  * 刪除 Diff
  */
-export const ProductDeleteDiff = async (req, res, next) => {
-  const { diff } = req.params
-  const { _id } = req.body
+export const DeleteProductDiff = async (req, res, next) => {
+  const { id } = req.params
 
-  const isExist = await ProductDiff.findById({
-    _id
-  })
+  const isExist = await ProductDiff.findById(id)
   if (!isExist) {
     res.status(400).send('此產品難易度不存在')
     return
   }
 
   const Outline = await ProductOutline.find({}).populate('diff')
-  const filter = Outline.filter((outline) => outline.diff._id === _id)
+  const filter = Outline.filter((outline) => outline.diff._id === id)
   if (filter.length) {
-    successHandle(res, `有其他產品仍在使用此難易度 - ${diff}`, filter)
+    successHandle(res, `有其他產品仍在使用此難易度 - ${isExist.diff}`, filter)
     return
   }
 
-  const Result = await ProductDiff.deleteOne({ _id })
+  const Result = await ProductDiff.deleteOne({ _id: id })
 
   successHandle(res, '成功刪除產品難易度', Result)
 }
@@ -315,19 +305,17 @@ export const ProductDeleteDiff = async (req, res, next) => {
 /**
  * 更新 Diff
  */
-export const ProductPutDiff = async (req, res, next) => {
-  const { diff } = req.params
-  const { _id } = req.body
+export const PutProductDiff = async (req, res, next) => {
+  const { id } = req.params
+  const { diff } = req.body
 
-  const isExist = await ProductDiff.findById({
-    _id
-  })
+  const isExist = await ProductDiff.findById(id)
   if (!isExist) {
     res.status(400).send('此產品分類不存在')
     return
   }
 
-  const Diff = await ProductDiff.findByIdAndUpdate(_id, {
+  const Diff = await ProductDiff.findByIdAndUpdate(id, {
     diff
   })
 
@@ -337,7 +325,7 @@ export const ProductPutDiff = async (req, res, next) => {
 /**
  * 取得全部 Env
  */
-export const ProductGetEnv = async (req, res, next) => {
+export const GetProductEnv = async (req, res, next) => {
   const Env = await ProductEnv.find()
 
   if (!Env.length) {
@@ -351,7 +339,7 @@ export const ProductGetEnv = async (req, res, next) => {
 /**
  * 新增 Env
  */
-export const ProductPostEnv = async (req, res, next) => {
+export const PostProductEnv = async (req, res, next) => {
   const { env } = req.body
 
   if (!env) {
@@ -378,26 +366,23 @@ export const ProductPostEnv = async (req, res, next) => {
 /**
  * 刪除 Env
  */
-export const ProductDeleteEnv = async (req, res, next) => {
-  const { env } = req.params
-  const { _id } = req.body
+export const DeleteProductEnv = async (req, res, next) => {
+  const { id } = req.params
 
-  const isExist = await ProductEnv.findById({
-    _id
-  })
+  const isExist = await ProductEnv.findById(id)
   if (!isExist) {
     res.status(400).send('此產品分類不存在')
     return
   }
 
   const Outline = await ProductOutline.find({}).populate('env')
-  const filter = Outline.filter((outline) => outline.env._id === _id)
+  const filter = Outline.filter((outline) => outline.env._id === id)
   if (filter.length) {
-    successHandle(res, `有其他產品仍在使用此分類 - ${env}`, filter)
+    successHandle(res, `有其他產品仍在使用此分類 - ${isExist.env}`, filter)
     return
   }
 
-  const Result = await ProductEnv.deleteOne({ _id })
+  const Result = await ProductEnv.deleteOne({ _id: id })
 
   successHandle(res, '成功刪除產品分類', Result)
 }
@@ -405,19 +390,17 @@ export const ProductDeleteEnv = async (req, res, next) => {
 /**
  * 更新 Env
  */
-export const ProductPutEnv = async (req, res, next) => {
-  const { env } = req.params
-  const { _id } = req.body
+export const PutProductEnv = async (req, res, next) => {
+  const { id } = req.params
+  const { env } = req.body
 
-  const isExist = await ProductEnv.findById({
-    _id
-  })
+  const isExist = await ProductEnv.findById(id)
   if (!isExist) {
     res.status(400).send('此產品分類不存在')
     return
   }
 
-  const Env = await ProductEnv.findByIdAndUpdate(_id, {
+  const Env = await ProductEnv.findByIdAndUpdate(id, {
     env
   })
 
@@ -427,7 +410,7 @@ export const ProductPutEnv = async (req, res, next) => {
 /**
  * 取得特定 | 全部 Discount
  */
-export const ProductGetDiscount = async (req, res, next) => {
+export const GetProductDiscount = async (req, res, next) => {
   const { name } = req.params
 
   if (!name) {
@@ -452,7 +435,7 @@ export const ProductGetDiscount = async (req, res, next) => {
 /**
  * 新增 Discount
  */
-export const ProductPostDiscount = async (req, res, next) => {
+export const PostProductDiscount = async (req, res, next) => {
   const { title, content, image, method } = req.body
 
   if (!title) {
@@ -482,7 +465,7 @@ export const ProductPostDiscount = async (req, res, next) => {
 /**
  * 刪除 Discount
  */
-export const ProductDeleteDiscount = async (req, res, next) => {
+export const DeleteProductDiscount = async (req, res, next) => {
   const { discount } = req.params
   const { _id } = req.body
 
@@ -509,7 +492,7 @@ export const ProductDeleteDiscount = async (req, res, next) => {
 /**
  * 更新 Discount
  */
-export const ProductPutDiscount = async (req, res, next) => {
+export const PutProductDiscount = async (req, res, next) => {
   const { discount } = req.params
   const { _id } = req.body
 
@@ -531,7 +514,7 @@ export const ProductPutDiscount = async (req, res, next) => {
 /**
  * 取得全部 Purchase
  */
-export const ProductGetPurchase = async (req, res, next) => {
+export const GetProductPurchase = async (req, res, next) => {
   const { title } = req.params
 
   if (!title) {
@@ -556,7 +539,7 @@ export const ProductGetPurchase = async (req, res, next) => {
 /**
  * 新增 Purchase
  */
-export const ProductPostPurchase = async (req, res, next) => {
+export const PostProductPurchase = async (req, res, next) => {
   const { title, dep, image, price, stock } = req.body
 
   if (!title) {
@@ -587,26 +570,27 @@ export const ProductPostPurchase = async (req, res, next) => {
 /**
  * 刪除 Purchase
  */
-export const ProductDeletePurchase = async (req, res, next) => {
-  const { purchase } = req.params
-  const { _id } = req.body
+export const DeleteProductPurchase = async (req, res, next) => {
+  const { id } = req.params
 
-  const isExist = await ProductPurchase.findById({
-    _id
-  })
+  const isExist = await ProductPurchase.findById(id)
   if (!isExist) {
     res.status(400).send('此加購商品不存在')
     return
   }
 
   const Outline = await ProductOutline.find({}).populate('purchase')
-  const filter = Outline.filter((outline) => outline.purchase._id === _id)
+  const filter = Outline.filter((outline) => outline.purchase._id === id)
   if (filter.length) {
-    successHandle(res, `有其他產品仍在使用此加購商品 - ${purchase}`, filter)
+    successHandle(
+      res,
+      `有其他產品仍在使用此加購商品 - ${isExist.purchase}`,
+      filter
+    )
     return
   }
 
-  const Result = await ProductPurchase.deleteOne({ _id })
+  const Result = await ProductPurchase.deleteOne({ _id: id })
 
   successHandle(res, '成功刪除加購商品', Result)
 }
@@ -614,12 +598,11 @@ export const ProductDeletePurchase = async (req, res, next) => {
 /**
  * 更新 Purchase
  */
-export const ProductPutPurchase = async (req, res, next) => {
-  const { id, title, dep, image, price, stock } = req.body
+export const PutProductPurchase = async (req, res, next) => {
+  const { id } = req.params
+  const { title, dep, image, price, stock } = req.body
 
-  const isExist = await ProductPurchase.findById({
-    _id: id
-  })
+  const isExist = await ProductPurchase.findById(id)
   if (!isExist) {
     res.status(400).send('此加購商品不存在')
     return
@@ -639,7 +622,7 @@ export const ProductPutPurchase = async (req, res, next) => {
 /**
  * 取得全部 Outline
  */
-export const ProductGetOutlines = async (req, res, next) => {
+export const GetProductOutlines = async (req, res, next) => {
   const Outline = await ProductOutline.find()
     .populate('catalog')
     .populate('size')
@@ -657,7 +640,7 @@ export const ProductGetOutlines = async (req, res, next) => {
 /**
  * 新增列表 & 內文資訊
  */
-export const ProductPostDetail = async (req, res, next) => {
+export const PostProductDetail = async (req, res, next) => {
   const {
     catalog,
     title,
@@ -744,7 +727,7 @@ export const ProductPostDetail = async (req, res, next) => {
 /**
  * 取得特定 | 全部產品
  */
-export const ProductGetDetail = async (req, res, next) => {
+export const GetProductDetail = async (req, res, next) => {
   const { catalog, title } = req.params
 
   const Catalog = await ProductCatalog.findOne({
@@ -780,7 +763,7 @@ export const ProductGetDetail = async (req, res, next) => {
 
     const filter = Detail.filter((detail) => detail.outline.catalog !== null)
 
-    successHandle(res, '成功取得產品', filter)
+    successHandle(res, '成功取得特定產品', filter)
     return
   }
 
@@ -823,9 +806,9 @@ export const ProductGetDetail = async (req, res, next) => {
 /**
  * 更新特定產品
  */
-export const ProductPutDetail = async (req, res, next) => {
+export const PutProductDetail = async (req, res, next) => {
+  const { id } = req.params
   const {
-    id,
     catalog,
     title,
     image,
@@ -844,9 +827,7 @@ export const ProductPutDetail = async (req, res, next) => {
     care
   } = req.body
 
-  const Detail = await ProductDetail.findOne({
-    _id: id
-  }).populate({
+  const Detail = await ProductDetail.findOne(id).populate({
     path: 'outline',
     populate: [
       {
@@ -915,12 +896,10 @@ export const ProductPutDetail = async (req, res, next) => {
 /**
  * 刪除特定產品
  */
-export const ProductDeleteDetail = async (req, res, next) => {
-  const { id } = req.body
+export const DeleteProductDetail = async (req, res, next) => {
+  const { id } = req.params
 
-  const isExist = await ProductDetail.findById({
-    _id: id
-  })
+  const isExist = await ProductDetail.findById(id)
   if (!isExist) {
     res.status(400).send('找不到此產品')
     return

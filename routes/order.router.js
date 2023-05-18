@@ -1,19 +1,19 @@
 import { Router } from 'express'
 
 import {
-  GetOrder,
-  PostOrder,
-  DeleteOrder
+  GetOrderDetail,
+  PostOrderDetail,
+  DeleteOrderDetail
 } from '../controllers/order.controller.js'
 
 const router = Router()
 
-router.get('/:id?', GetOrder)
+router.get('/:id?', GetOrderDetail)
 
-router.post('/', PostOrder)
+router.post('/', PostOrderDetail)
 
-router.delete('/:id', DeleteOrder)
+router.delete('/:id', DeleteOrderDetail)
 
-// router.put('/:id', PutOrder)
+// router.put('/:id', PutOrderDetail)
 
 export { router as order }

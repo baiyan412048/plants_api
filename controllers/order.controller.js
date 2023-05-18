@@ -11,7 +11,7 @@ import { Order as OrderModel } from '../models/order.model.js'
 /**
  * 取得訂單
  */
-export const GetOrder = async (req, res, next) => {
+export const GetOrderDetail = async (req, res, next) => {
   const { id } = req.params
 
   const Specific = await OrderModel.findOne({
@@ -43,11 +43,13 @@ export const GetOrder = async (req, res, next) => {
 /**
  * 建立訂單
  */
-export const PostOrder = async (req, res, next) => {
-  const { member: id, list, bill, shipping, price } = req.body
+export const PostOrderDetail = async (req, res, next) => {
+  const { memberId, list, bill, shipping, price } = req.body
 
-  if (!id) {
-    res.status(400).send('找不到會員資訊')
+  const isExist = MemberModel.findById(memberId)
+
+  if (!isExist) {
+    res.status(400).send('沒有此會員資訊')
   }
 
   if (!list) {
@@ -67,7 +69,7 @@ export const PostOrder = async (req, res, next) => {
   }
 
   const Order = await OrderModel.create({
-    member: id,
+    member: memberId,
     list,
     bill,
     shipping,
@@ -75,7 +77,7 @@ export const PostOrder = async (req, res, next) => {
   })
 
   // 更新對應會員的訂單
-  await MemberModel.findByIdAndUpdate(id, { $push: { order: Order._id } })
+  await MemberModel.findByIdAndUpdate(memberId, { $push: { order: Order._id } })
 
   successHandle(res, '成功新增訂單', Order)
 }
@@ -83,25 +85,24 @@ export const PostOrder = async (req, res, next) => {
 /**
  * 刪除訂單
  */
-export const DeleteOrder = async (req, res, next) => {
-  const { member, order } = req.params
+export const DeleteOrderDetail = async (req, res, next) => {
+  const { id } = req.params
+  const { memberId } = req.body
 
-  const isExist = await OrderModel.findOne({
-    _id: order
-  })
+  const isExist = await OrderModel.findById(id)
 
   if (!isExist) {
     res.status(400).send('找不到此訂單')
   }
 
   const Order = await OrderModel.deleteOne({
-    _id: order
+    _id: id
   })
 
   // 刪除對應會員訂單資料
   await MemberModel.findByIdAndUpdate(
-    member,
-    { $pull: { order } },
+    memberId,
+    { $pull: { order: id } },
     { new: true }
   )
 

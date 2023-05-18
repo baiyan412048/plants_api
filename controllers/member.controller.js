@@ -9,7 +9,7 @@ import { Member as MemberModel } from '../models/member.model.js'
 /**
  * 取得會員
  */
-export const GetMember = async (req, res, next) => {
+export const GetMemberProfile = async (req, res, next) => {
   const { id } = req.params
 
   const Specific = await MemberModel.findOne({
@@ -46,7 +46,7 @@ export const GetMember = async (req, res, next) => {
 /**
  * 建立會員
  */
-export const PostMember = async (req, res, next) => {
+export const PostMemberProfile = async (req, res, next) => {
   const { image, name, email, password, phone, address, birthday } = req.body
 
   const Member = await MemberModel.create({
@@ -65,9 +65,9 @@ export const PostMember = async (req, res, next) => {
 /**
  * 更新會員資料
  */
-export const PutMember = async (req, res, next) => {
-  const { id, image, name, email, password, phone, address, birthday } =
-    req.body
+export const PutMemberProfile = async (req, res, next) => {
+  const { id } = req.params
+  const { image, name, email, password, phone, address, birthday } = req.body
 
   const Member = await MemberModel.findOne({
     _id: id
@@ -103,9 +103,13 @@ export const PostFavoriteProduct = async (req, res, next) => {
   }
 
   // 新增我的最愛商品
-  const Member = await MemberModel.findByIdAndUpdate(id, {
-    $push: { favorite: productId }
-  })
+  const Member = await MemberModel.findByIdAndUpdate(
+    id,
+    {
+      $push: { favorite: productId }
+    },
+    { new: true }
+  )
 
   successHandle(res, '成功新增我的最愛商品', Member)
 }
@@ -125,7 +129,9 @@ export const DeleteFavoriteProduct = async (req, res, next) => {
   // 刪除我的最愛商品
   const Member = await MemberModel.findByIdAndUpdate(
     id,
-    { $pull: { favorite: productId } },
+    {
+      $pull: { favorite: productId }
+    },
     { new: true }
   )
 
@@ -135,14 +141,12 @@ export const DeleteFavoriteProduct = async (req, res, next) => {
 /**
  * 會員登入
  */
-export const MemberLogin = async (req, res, next) => {
+export const MemberLoginCheck = async (req, res, next) => {
   const { email, password } = req.body
 
   const Member = await MemberModel.findOne({
     email,
     password
-  }).populate({
-    path: 'order'
   })
 
   if (!Member) {
