@@ -3,7 +3,8 @@ import { Router } from 'express'
 import {
   GetOrderDetail,
   PostOrderDetail,
-  DeleteOrderDetail
+  DeleteOrderDetail,
+  PutOrderDetail
 } from '../controllers/order.controller.js'
 
 const router = Router()
@@ -14,6 +15,6 @@ router.post('/', PostOrderDetail)
 
 router.delete('/:id', DeleteOrderDetail)
 
-// router.put('/:id', PutOrderDetail)
+router.put('/:id', PutOrderDetail)
 
 export { router as order }

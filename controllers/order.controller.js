@@ -108,3 +108,28 @@ export const DeleteOrderDetail = async (req, res, next) => {
 
   successHandle(res, '成功刪除訂單', Order)
 }
+
+/**
+ * 更新訂單
+ */
+export const PutOrderDetail = async (req, res, next) => {
+  const { id } = req.params
+  const { state } = req.body
+
+  const isExist = await OrderModel.findById(id)
+
+  if (!isExist) {
+    res.status(400).send('找不到此訂單')
+  }
+
+  // 更新對應會員訂單資料
+  const Order = await OrderModel.findByIdAndUpdate(
+    id,
+    {
+      $set: { 'shipping.state': state }
+    },
+    { new: true }
+  )
+
+  successHandle(res, '成功更新訂單', Order)
+}

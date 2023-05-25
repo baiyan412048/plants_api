@@ -39,7 +39,8 @@ export const PostNewsSetting = async (req, res, next) => {
       name,
       banner: {
         desktop: banner.desktop,
-        mobile: banner?.mobile
+        mobile: banner?.mobile,
+        color: banner?.color
       }
     })
 
@@ -51,7 +52,8 @@ export const PostNewsSetting = async (req, res, next) => {
     name,
     banner: {
       desktop: banner.desktop,
-      mobile: banner?.mobile
+      mobile: banner?.mobile,
+      color: banner?.color
     }
   })
 

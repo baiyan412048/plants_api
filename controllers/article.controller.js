@@ -39,7 +39,8 @@ export const PostArticleSetting = async (req, res, next) => {
       name,
       banner: {
         desktop: banner.desktop,
-        mobile: banner?.mobile
+        mobile: banner?.mobile,
+        color: banner?.color
       }
     })
 
@@ -51,7 +52,8 @@ export const PostArticleSetting = async (req, res, next) => {
     name,
     banner: {
       desktop: banner.desktop,
-      mobile: banner?.mobile
+      mobile: banner?.mobile,
+      color: banner?.color
     }
   })
 
@@ -118,7 +120,7 @@ export const DeleteArticleCatalog = async (req, res, next) => {
     return
   }
 
-  const Result = await ArticleCatalog.deleteOne({ id })
+  const Result = await ArticleCatalog.deleteOne({ _id: id })
 
   successHandle(res, '成功刪除文章分類', Result)
 }

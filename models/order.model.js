@@ -83,7 +83,7 @@ const OrderSchema = new Schema(
         type: String
       },
       state: {
-        type: Boolean,
+        type: String,
         required: [true, '配送狀態 為必填'],
         enum: ['處理中', '配送中', '已送達', '已退貨'],
         default: '處理中'

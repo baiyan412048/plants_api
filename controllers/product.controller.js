@@ -10,7 +10,6 @@ import {
   ProductSize,
   ProductDiff,
   ProductEnv,
-  ProductDiscount,
   ProductPurchase,
   ProductOutline,
   ProductDetail
@@ -44,7 +43,8 @@ export const PostProductSetting = async (req, res, next) => {
       name,
       banner: {
         desktop: banner.desktop,
-        mobile: banner?.mobile
+        mobile: banner?.mobile,
+        color: banner?.color
       }
     })
 
@@ -56,7 +56,8 @@ export const PostProductSetting = async (req, res, next) => {
     name,
     banner: {
       desktop: banner.desktop,
-      mobile: banner?.mobile
+      mobile: banner?.mobile,
+      color: banner?.color
     }
   })
 
@@ -408,110 +409,6 @@ export const PutProductEnv = async (req, res, next) => {
 }
 
 /**
- * 取得特定 | 全部 Discount
- */
-export const GetProductDiscount = async (req, res, next) => {
-  const { name } = req.params
-
-  if (!name) {
-    const Discount = await ProductDiscount.find()
-
-    if (!Discount.length) {
-      res.status(400).send('無產品優惠被建立')
-      return
-    }
-
-    successHandle(res, '成功取得全部產品優惠', Discount)
-    return
-  }
-
-  const Discount = await ProductDiscount.findOne({
-    name
-  })
-
-  successHandle(res, '成功取得特定產品優惠', Discount)
-}
-
-/**
- * 新增 Discount
- */
-export const PostProductDiscount = async (req, res, next) => {
-  const { title, content, image, method } = req.body
-
-  if (!title) {
-    res.status(400).send('請確認產品優惠標題')
-    return
-  }
-
-  const isExist = await ProductDiscount.findOne({
-    title
-  })
-
-  if (isExist) {
-    successHandle(res, '此產品優惠已存在', isExist)
-    return
-  }
-
-  const Discount = await ProductDiscount.create({
-    title,
-    content,
-    image,
-    method
-  })
-
-  successHandle(res, '成功新增產品優惠', Discount)
-}
-
-/**
- * 刪除 Discount
- */
-export const DeleteProductDiscount = async (req, res, next) => {
-  const { discount } = req.params
-  const { _id } = req.body
-
-  const isExist = await ProductDiscount.findById({
-    _id
-  })
-  if (!isExist) {
-    res.status(400).send('此優惠資訊不存在')
-    return
-  }
-
-  const Outline = await ProductOutline.find({}).populate('discount')
-  const filter = Outline.filter((outline) => outline.discount._id === _id)
-  if (filter.length) {
-    successHandle(res, `有其他產品仍在使用此優惠資訊 - ${discount}`, filter)
-    return
-  }
-
-  const Result = await ProductDiscount.deleteOne({ _id })
-
-  successHandle(res, '成功刪除優惠資訊', Result)
-}
-
-/**
- * 更新 Discount
- */
-export const PutProductDiscount = async (req, res, next) => {
-  const { discount } = req.params
-  const { _id } = req.body
-
-  const isExist = await ProductDiscount.findById({
-    _id
-  })
-  if (!isExist) {
-    res.status(400).send('此優惠資訊不存在')
-    return
-  }
-
-  const Discount = await ProductDiscount.findByIdAndUpdate(_id, {
-    discount
-  })
-
-  successHandle(res, '已成功更新優惠資訊', Discount)
-}
-
-/**
  * 取得全部 Purchase
  */
 export const GetProductPurchase = async (req, res, next) => {
@@ -798,7 +695,6 @@ export const GetProductDetail = async (req, res, next) => {
       ]
     })
     .populate('purchase')
-    .populate('discount')
 
   successHandle(res, '成功取得產品', Detail)
 }

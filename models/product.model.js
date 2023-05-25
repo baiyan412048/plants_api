@@ -337,12 +337,6 @@ const ProductDetailSchema = new Schema(
     notes: {
       type: String
     },
-    discount: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product_discount'
-      }
-    ],
     purchase: [
       {
         type: mongoose.Schema.Types.ObjectId,
