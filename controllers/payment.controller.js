@@ -44,8 +44,8 @@ export const payAction = (req, res) => {
     TotalAmount: '100',
     TradeDesc: '企鵝玩偶 一隻',
     ItemName: '企鵝玩偶 300元 X 1',
-    ReturnURL: '', // 付款結果通知URL
-    OrderResultURL: '', // 在使用者在付款結束後，將使用者的瀏覽器畫面導向該URL所指定的URL
+    ReturnURL: 'https://api.baiyan777.com/api/payment/return', // 付款結果通知 URL
+    OrderResultURL: 'https://api.baiyan777.com/api/payment/result', // 在使用者在付款結束後，將使用者的瀏覽器畫面導向該 URL 所指定的 URL
     EncryptType: 1,
     // ItemURL: 'http://item.test.tw',
     Remark: '該服務繳費成立時，恕不接受退款。'

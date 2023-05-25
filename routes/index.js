@@ -9,13 +9,14 @@ import { member } from './member.router.js'
 import { order } from './order.router.js'
 import { contact } from './contact.router.js'
 import { image } from './image.router.js'
+import { payment } from './payment.router.js'
+
 const router = Router()
 
 // 首頁
 router.get('/', function (req, res, next) {
   res.send('前端畫面 API')
 })
-
 // 關於我們
 router.use('/about', about)
 // 常見問題
@@ -34,5 +35,7 @@ router.use('/order', order)
 router.use('/contact', contact)
 // 圖片相關 - 取得、上傳、刪除
 router.use('/image', image)
+// 結帳
+router.use('/payment', payment)
 
 export default router

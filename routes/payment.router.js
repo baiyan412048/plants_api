@@ -9,16 +9,16 @@ import {
 
 const router = Router()
 
-// 用戶進入付款頁面所呼叫的API
+// 用戶進入付款頁面所呼叫的 API
 router.get('/payment', payUid)
 
-// 用戶在付款頁面按下結帳的API
-router.get('/paymentaction', payAction)
+// 用戶在付款頁面按下結帳的 API
+router.get('/action', payAction)
 
-// 銜接歐付寶的Return_URL回來的資料
-router.post('/payment', paymentResult)
+// 銜接歐付寶的 Return URL回來的資料
+router.post('/return', paymentResult)
 
-// 銜接歐付寶的OrderResultURL
-router.post('/paymentactionresult', paymentActionResult)
+// 銜接歐付寶的 Order Result URL
+router.post('/result', paymentActionResult)
 
-module.exports = router
+export { router as payment }
