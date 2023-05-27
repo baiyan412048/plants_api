@@ -14,28 +14,16 @@ import { Order as OrderModel } from '../models/order.model.js'
 export const GetOrderDetail = async (req, res, next) => {
   const { id } = req.params
 
-  const Specific = await OrderModel.findOne({
-    _id: id
-  })
-    .populate({
-      path: 'member'
-    })
-    .populate({
-      path: 'list.product',
-      populate: {
-        path: 'outline'
-      }
-    })
-    .populate({
-      path: 'list.purchase'
-    })
-
   if (!id) {
     const Order = await OrderModel.find()
 
     successHandle(res, '成功取得訂單', Order)
     return
   }
+
+  const Specific = await OrderModel.findOne({
+    _id: id
+  })
 
   successHandle(res, '成功取得特定訂單', Specific)
 }
@@ -44,37 +32,48 @@ export const GetOrderDetail = async (req, res, next) => {
  * 建立訂單
  */
 export const PostOrderDetail = async (req, res, next) => {
-  const { memberId, list, bill, shipping, price } = req.body
+  const { memberId, products, purchase, bill, shipping, price } = req.body
 
   const isExist = MemberModel.findById(memberId)
 
-  if (!isExist) {
+  if (!isExist && !memberId) {
     res.status(400).send('沒有此會員資訊')
+    return
   }
 
-  if (!list) {
+  if (!products) {
     res.status(400).send('沒有產品資訊')
+    return
   }
 
   if (!bill) {
     res.status(400).send('沒有帳單資訊')
+    return
   }
 
   if (!shipping) {
     res.status(400).send('沒有配送資訊')
+    return
   }
 
   if (!price) {
     res.status(400).send('沒有金額資訊')
+    return
   }
 
-  const Order = await OrderModel.create({
+  const temp = {
     member: memberId,
-    list,
+    products,
     bill,
     shipping,
     price
-  })
+  }
+
+  if (purchase && purchase.length) {
+    temp.purchase = purchase
+  }
+
+  const Order = await OrderModel.create(temp)
 
   // 更新對應會員的訂單
   await MemberModel.findByIdAndUpdate(memberId, { $push: { order: Order._id } })
@@ -93,6 +92,7 @@ export const DeleteOrderDetail = async (req, res, next) => {
 
   if (!isExist) {
     res.status(400).send('找不到此訂單')
+    return
   }
 
   const Order = await OrderModel.deleteOne({
@@ -120,6 +120,7 @@ export const PutOrderDetail = async (req, res, next) => {
 
   if (!isExist) {
     res.status(400).send('找不到此訂單')
+    return
   }
 
   // 更新對應會員訂單資料

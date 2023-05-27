@@ -1,16 +1,17 @@
 import { Router } from 'express'
 
-import { paymentRequest } from '../controllers/payment.controller.js'
+import {
+  paymentRequest,
+  paymentConfirm
+} from '../controllers/payment.controller.js'
 
 const router = Router()
 
-// 確認付款
-router.get('/confirm', function (req, res, next) {
-  res.send(`Line pay 確認付款 ${res}`)
-})
-
 // 付款
-router.get('/request', paymentRequest)
+router.post('/request/:id?', paymentRequest)
+
+// 確認付款
+router.post('/confirm', paymentConfirm)
 
 // 用戶進入付款頁面所呼叫的 API
 // router.get('/payment', payUid)

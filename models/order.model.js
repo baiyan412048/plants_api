@@ -9,23 +9,6 @@ const OrderSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Member'
     },
-    list: [
-      {
-        count: {
-          type: Number
-        },
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Product_detail'
-        },
-        purchase: [
-          {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product_purchase'
-          }
-        ]
-      }
-    ],
     bill: {
       name: {
         type: String,
@@ -43,7 +26,7 @@ const OrderSchema = new Schema(
       payment: {
         type: String,
         required: [true, '付款方式 為必填'],
-        enum: ['creditCard', 'atm', 'shop']
+        enum: ['linepay', 'shop']
       },
       state: {
         type: Boolean,
@@ -98,7 +81,61 @@ const OrderSchema = new Schema(
         type: Number,
         required: [true, '運費 為必填']
       }
-    }
+    },
+    products: [
+      {
+        name: {
+          type: String,
+          required: [true, '請填入商品名稱']
+        },
+        imageUrl: {
+          type: String,
+          required: [true, '請填入商品圖片路徑']
+        },
+        quantity: {
+          type: String,
+          required: [true, '請填入商品購買數量']
+        },
+        price: {
+          type: Number,
+          required: [true, '請填入商品結帳金額']
+        },
+        originalPrice: {
+          type: Number
+        },
+        target: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product_detail'
+        }
+      }
+    ],
+    purchase: [
+      {
+        name: {
+          type: String,
+          required: [true, '請填入商品名稱']
+        },
+        imageUrl: {
+          type: String,
+          required: [true, '請填入商品圖片路徑']
+        },
+        quantity: {
+          type: String,
+          required: [true, '請填入商品購買數量']
+        },
+        price: {
+          type: Number,
+          required: [true, '請填入商品結帳金額']
+        },
+        originalPrice: {
+          type: Number
+        },
+        target: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product_purchase'
+        }
+      }
+    ]
   },
   {
     timestamps: true

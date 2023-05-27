@@ -90,18 +90,6 @@ router.delete('/env/:id', DeleteProductEnv)
 // 修改 Env
 router.put('/env/:id', PutProductEnv)
 
-// 取得全部 優惠資訊
-// router.get('/discount', GetProductDiscount)
-
-// 新增 優惠資訊
-// router.post('/discount', PostProductDiscount)
-
-// 刪除 優惠資訊
-// router.delete('/discount/:id', DeleteProductDiscount)
-
-// 修改 優惠資訊
-// router.put('/discount/:id', PutProductDiscount)
-
 // 取得全部 | 特定加購商品 (前後台網址使用產品名稱，所以 api 也沿用同樣設定)
 router.get('/purchase/:title?', GetProductPurchase)
 

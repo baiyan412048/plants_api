@@ -16,18 +16,7 @@ export const GetMemberProfile = async (req, res, next) => {
     _id: id
   })
     .populate({
-      path: 'order',
-      populate: [
-        {
-          path: 'list.product',
-          populate: {
-            path: 'outline'
-          }
-        },
-        {
-          path: 'list.purchase'
-        }
-      ]
+      path: 'order'
     })
     .populate({
       path: 'favorite'

@@ -132,48 +132,6 @@ const ProductEnvSchema = new Schema(
 export const ProductEnv = mongoose.model('Product_env', ProductEnvSchema)
 
 /**
- * 優惠資訊 schema
- */
-const ProductDiscountSchema = new Schema(
-  {
-    title: {
-      type: String,
-      required: [true, '優惠資訊 標題 為必填'],
-      max: 20
-    },
-    content: {
-      type: String,
-      required: [true, '優惠資訊 內容 為必填']
-    },
-    image: {
-      type: String
-    },
-    method: {
-      type: String,
-      required: [true, '優惠資訊 method 為必填']
-    },
-    product: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        required: [true, '套用產品 為必選'],
-        ref: 'Product_detail'
-      }
-    ]
-  },
-  {
-    timestamps: true
-  }
-)
-
-/**
- * 優惠資訊 model
- */
-export const ProductDiscount = mongoose.model(
-  'Product_discount',
-  ProductDiscountSchema
-)
-
-/**
  * 加購商品 schema
  */
 const ProductPurchaseSchema = new Schema(
