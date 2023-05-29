@@ -4,6 +4,7 @@ import {
   GetMemberProfile,
   PostMemberProfile,
   PutMemberProfile,
+  PutMemberPassword,
   MemberLoginCheck,
   PostFavoriteProduct,
   DeleteFavoriteProduct
@@ -16,6 +17,8 @@ router.get('/:id?', GetMemberProfile)
 router.post('/', PostMemberProfile)
 
 router.put('/:id', PutMemberProfile)
+
+router.put('/:id/password', PutMemberPassword)
 
 router.post('/:id/favorite', PostFavoriteProduct)
 

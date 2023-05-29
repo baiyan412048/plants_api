@@ -13,6 +13,10 @@ const MemberSchema = new Schema(
       type: String,
       required: [true, '密碼 為必填']
     },
+    salt: {
+      type: String,
+      required: [true, '鹽值 為必填']
+    },
     image: {
       type: String
     },

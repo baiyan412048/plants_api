@@ -63,7 +63,10 @@ const OrderSchema = new Schema(
         type: String
       },
       remark: {
-        type: String
+        type: String,
+        default() {
+          return '無'
+        }
       },
       state: {
         type: String,
