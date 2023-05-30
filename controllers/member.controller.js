@@ -38,7 +38,8 @@ export const GetMemberProfile = async (req, res, next) => {
  * 建立會員
  */
 export const PostMemberProfile = async (req, res, next) => {
-  const { image, name, email, password, phone, address, birthday } = req.body
+  const { image, name, email, password, phone, city, zone, address, birthday } =
+    req.body
 
   // 生成隨機的鹽值
   const salt = crypto.randomBytes(16).toString('hex')
@@ -55,6 +56,8 @@ export const PostMemberProfile = async (req, res, next) => {
     password: hashedPassword,
     salt,
     phone,
+    city,
+    zone,
     address,
     birthday
   })
@@ -67,7 +70,7 @@ export const PostMemberProfile = async (req, res, next) => {
  */
 export const PutMemberProfile = async (req, res, next) => {
   const { id } = req.params
-  const { image, name, email, phone, address, birthday } = req.body
+  const { image, name, email, phone, city, zone, address, birthday } = req.body
 
   const Member = await MemberModel.findOne({
     _id: id
@@ -82,6 +85,8 @@ export const PutMemberProfile = async (req, res, next) => {
   if (name && name !== '') Member.name = name
   if (email && email !== '') Member.email = email
   if (phone && phone !== '') Member.phone = phone
+  if (city && city !== '') Member.city = city
+  if (zone && zone !== '') Member.zone = zone
   if (address && address !== '') Member.address = address
   if (birthday && birthday !== '') Member.birthday = birthday
   Member.save()

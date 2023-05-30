@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser'
 import logger from 'morgan'
 
 import router from './routes/index.js'
+import { verifyApiKey } from './controllers/api.controller.js'
 
 // Set up mongoose connection
 import mongoose from 'mongoose'
@@ -39,7 +40,7 @@ app.use(cookieParser())
 // app.use(express.static(join(__dirname, 'public')));
 
 // 前端畫面 API
-app.use('/api', router)
+app.use('/api', verifyApiKey, router)
 
 // error handler
 app.use((err, req, res, next) => {

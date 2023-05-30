@@ -30,16 +30,20 @@ const MemberSchema = new Schema(
       required: [true, '手機 為必填']
     },
     birthday: {
-      type: Date
+      type: Date,
+      required: [true, '手機 為必填']
     },
     city: {
-      type: String
+      type: String,
+      required: [true, '縣市 為必填']
     },
     zone: {
-      type: Number
+      type: Number,
+      required: [true, '區碼 為必填']
     },
     address: {
-      type: String
+      type: String,
+      required: [true, '地址 為必填']
     },
     favorite: [
       {

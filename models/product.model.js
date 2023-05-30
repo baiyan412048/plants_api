@@ -150,7 +150,11 @@ const ProductPurchaseSchema = new Schema(
     },
     price: {
       type: Number,
-      required: [true, '價格 為必填'],
+      required: [true, '販售價格 為必填'],
+      default: 0
+    },
+    originalPrice: {
+      type: Number,
       default: 0
     },
     stock: {

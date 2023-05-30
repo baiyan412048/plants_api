@@ -66,8 +66,6 @@ export const paymentRequest = async (req, res, next) => {
     .map((obj) => obj.amount)
     .reduce((accumulator, currentValue) => accumulator + currentValue)
 
-  console.log(JSON.stringify(requestBody), 'requestBody')
-
   // 時間戳
   const nonce = Date.now().toString()
 
@@ -91,7 +89,6 @@ export const paymentRequest = async (req, res, next) => {
     )
 
     const data = await response.json()
-    console.log(data, 'data')
     successHandle(res, '確認付款', {
       ...data,
       amount: requestBody.amount
