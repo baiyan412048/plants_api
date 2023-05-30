@@ -32,7 +32,7 @@ export const paymentRequest = async (req, res, next) => {
     redirectUrls
   }
   // 主要商品
-  if (products.length) {
+  if (products && products.length) {
     const productObj = {
       id: Math.random().toString(36).substring(2, 6),
       name: '主要商品',
@@ -47,7 +47,7 @@ export const paymentRequest = async (req, res, next) => {
     requestBody.packages.push(productObj)
   }
   // 加購商品
-  if (purchase.length) {
+  if (purchase && purchase.length) {
     const purchaseObj = {
       id: Math.random().toString(36).substring(2, 6),
       name: '加購商品',
