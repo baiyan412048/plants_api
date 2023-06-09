@@ -41,6 +41,15 @@ export const PostMemberProfile = async (req, res, next) => {
   const { image, name, email, password, phone, city, zone, address, birthday } =
     req.body
 
+  const isExist = await MemberModel.find({
+    email
+  })
+
+  if (isExist.length) {
+    res.status(400).send('已有相同會員帳號')
+    return
+  }
+
   // 生成隨機的鹽值
   const salt = crypto.randomBytes(16).toString('hex')
   // 使用鹽值與密碼進行雜湊計算
