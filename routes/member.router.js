@@ -5,6 +5,7 @@ import {
   PostMemberProfile,
   PutMemberProfile,
   PutMemberPassword,
+  PostMemberForgetPassword,
   MemberLoginCheck,
   PostFavoriteProduct,
   DeleteFavoriteProduct
@@ -19,6 +20,8 @@ router.post('/', PostMemberProfile)
 router.put('/:id', PutMemberProfile)
 
 router.put('/:id/password', PutMemberPassword)
+
+router.post('/forget', PostMemberForgetPassword)
 
 router.post('/:id/favorite', PostFavoriteProduct)
 

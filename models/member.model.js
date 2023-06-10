@@ -31,7 +31,7 @@ const MemberSchema = new Schema(
     },
     birthday: {
       type: Date,
-      required: [true, '手機 為必填']
+      required: [true, '生日 為必填']
     },
     city: {
       type: String,

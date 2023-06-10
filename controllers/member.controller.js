@@ -193,6 +193,47 @@ export const PutMemberPassword = async (req, res, next) => {
 }
 
 /**
+ * 忘記會員密碼
+ */
+export const PostMemberForgetPassword = async (req, res, next) => {
+  const { email, birthday } = req.body
+
+  const Member = await MemberModel.findOne({
+    email
+  })
+
+  if (!Member) {
+    res.status(400).send('找不到此會員')
+    return
+  }
+
+  // 驗證生日
+  const formattedBirthday = new Date(Member.birthday)
+    .toISOString()
+    .split('T')[0]
+  if (formattedBirthday !== birthday) {
+    res.status(400).send('生日填寫錯誤')
+    return
+  }
+
+  // 生成密碼
+  const password = crypto.randomBytes(4).toString('hex')
+  // 生成新的隨機鹽值
+  const salt = crypto.randomBytes(16).toString('hex')
+  // 使用鹽值與密碼進行雜湊計算
+  const hash = crypto.createHash('sha256')
+  hash.update(password + salt)
+  // 取得雜湊後的密碼
+  const hashedPassword = hash.digest('hex')
+
+  Member.password = hashedPassword
+  Member.salt = salt
+  Member.save()
+
+  successHandle(res, '請使用新密碼登入', password)
+}
+
+/**
  * 會員登入
  */
 export const MemberLoginCheck = async (req, res, next) => {
